@@ -1,14 +1,17 @@
 import gzip, json
-import numpy as np
+import os
 
+import numpy as np
+from nltk import RegexpTokenizer
+
+from utils.utils import upload_args_from_json
+from utils.preprocessing import find_negations
 
 
 def parse(path):
   g = gzip.open(path, 'rb')
   for l in g:
     yield json.loads(l)
-
-
 
 def parseDataset(optimizer):
     '''
@@ -17,20 +20,18 @@ def parseDataset(optimizer):
     ones above 3 as positive.
     '''
     reviews = []
+    tokenizer = RegexpTokenizer(r'\w+')
     for review in parse(optimizer.dataset_name):
         try:
             if review["overall"] != 3.0:
                 r = []
-                r.append(review["reviewText"])
+                r.append(find_negations(review["reviewText"], tokenizer))
                 r.append(-1 if review["overall"] < 3.0 else +1)
                 review.append(r)
         except KeyError:
             pass
 
     return np.array(reviews)
-
-
-
 
 
 if __name__ == '__main__':

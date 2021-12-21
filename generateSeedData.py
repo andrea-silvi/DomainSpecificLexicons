@@ -8,15 +8,10 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
-from nltk.tokenize.destructive import NLTKWordTokenizer
-
-
-def find_negations():
-    return
 
 
 def generate_bow(data):
-    vectorizer = CountVectorizer(tokenizer=NLTKWordTokenizer)
+    vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(data[:, 0])
     y = data[:, 1]
     return X, y
