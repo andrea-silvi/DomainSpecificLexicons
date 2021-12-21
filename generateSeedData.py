@@ -3,18 +3,20 @@ Seed data are in the form of (word, score).
 Pass a numpy array of structure (comment, score)'''
 
 # import argparse
+import os
 from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
-from nltk.tokenize.destructive import NTLKWordTokenizer
+from nltk.tokenize.destructive import NLTKWordTokenizer
 
-def find_Negations():
 
+def find_negations():
     return
 
-def generate_BOW(data):
-    vectorizer = CountVectorizer()
+
+def generate_bow(data):
+    vectorizer = CountVectorizer(tokenizer=NLTKWordTokenizer)
     X = vectorizer.fit_transform(data[:, 0])
     y = data[:, 1]
     return X, y
@@ -27,7 +29,6 @@ if __name__ == '__main__':
     else:  # already a numpy array of shape (N, 2)
         pass
     processed_data = (data)
-    X, y = generate_BOW(processed_data)
-
+    X, y = generate_bow(processed_data)
 
 'this stuff is !notgood'
