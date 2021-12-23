@@ -1,6 +1,6 @@
-'''Generate seed data in order to train a network that can extract a domain dependent lexicon from them.
+'''Generate seed data that will be used to train a network that can extract a domain dependent lexicon from it.
 Seed data are in the form of (word, score).
-Pass a numpy array of structure (comment, score)'''
+'''
 
 # import argparse
 import os
