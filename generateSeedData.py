@@ -8,7 +8,7 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
-from liblinear.liblinearutil import train, problem, parameter
+from liblinear.liblinearutil import predict, train, problem, parameter
 
 
 def generate_bow(reviews):
@@ -24,6 +24,7 @@ def train_linear_pred(X, y):
     param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
     m = train(prob, param)
     [W, _b] = m.get_decfun()
+    predict(y, X, m)
     return W
 
 
