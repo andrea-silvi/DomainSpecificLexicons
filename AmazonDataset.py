@@ -27,7 +27,7 @@ def parseDataset(dataset_name):
                 r = []
                 r.append(find_negations(review["reviewText"], tokenizer))
                 r.append(-1 if review["overall"] < 3.0 else +1)
-                review.append(r)
+                reviews.append(r)
         except KeyError:
             continue
 
