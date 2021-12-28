@@ -11,11 +11,10 @@ from sklearn.feature_extraction.text import CountVectorizer
 from liblinear.liblinearutil import train, problem, parameter
 
 
-def generate_bow(data):
+def generate_bow(reviews):
     vectorizer = CountVectorizer()
-    X = vectorizer.fit_transform(data[:, 0])
-    y = data[:, 1]
-    return X, y, vectorizer.vocabulary_
+    X = vectorizer.fit_transform(reviews)
+    return X, vectorizer.vocabulary_
 
 
 def train_linear_pred(X, y):
