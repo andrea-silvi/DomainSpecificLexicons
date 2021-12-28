@@ -13,7 +13,7 @@ def parse(path):
   for l in g:
     yield json.loads(l)
 
-def parseDataset(optimizer):
+def parseDataset(dataset_name):
     '''
     Generate a numpy array with (review, score) from a gzip file.
     We throw away reviews with scores = 3 and we consider all ones below 3 as negative, and all
@@ -21,7 +21,7 @@ def parseDataset(optimizer):
     '''
     reviews = []
     tokenizer = RegexpTokenizer(r'\w+')
-    for review in parse(optimizer.dataset_name):
+    for review in parse(dataset_name):
         try:
             if review["overall"] != 3.0:
                 r = []
@@ -29,7 +29,7 @@ def parseDataset(optimizer):
                 r.append(-1 if review["overall"] < 3.0 else +1)
                 review.append(r)
         except KeyError:
-            pass
+            continue
 
     return np.array(reviews)
 

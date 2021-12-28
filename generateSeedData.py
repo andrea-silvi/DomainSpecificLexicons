@@ -8,7 +8,7 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
-from liblinear.liblinearutil import train
+from liblinear.liblinearutil import train, problem, parameter
 
 
 def generate_bow(data):
@@ -21,9 +21,11 @@ def generate_bow(data):
 def train_linear_pred(X, y):
     w_negative = len(y[y == +1]) / len(y)
     w_positive = 1 - w_negative
-    m = train(y, X, f'-t 0 -w-1 {w_negative} -w+1 {w_positive}')
-    w = m.get_decfun_coef()
-    return w
+    prob = problem(y, X)
+    param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
+    m = train(prob, param)
+    [W, _b] = m.get_decfun()
+    return W
 
 
 def assign_word_labels(X, w, vocabulary, f_min):
