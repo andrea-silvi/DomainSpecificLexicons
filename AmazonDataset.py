@@ -19,20 +19,19 @@ def parseDataset(dataset_name):
     We throw away reviews with scores = 3 and we consider all ones below 3 as negative, and all
     ones above 3 as positive.
     '''
-    reviews = []
+    reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
     for review in parse(dataset_name):
         try:
             if review["overall"] != 3.0:
-                r = []
-                r.append(find_negations(review["reviewText"], tokenizer))
-                r.append(-1 if review["overall"] < 3.0 else +1)
-                reviews.append(r)
+                review = find_negations(review["reviewText"], tokenizer)
+                score = -1 if review["overall"] < 3.0 else +1
+                reviews.append(review)
+                scores.append(score)
         except KeyError:
             continue
 
-    return np.array(reviews)
-
+    return reviews, scores
 
 if __name__ == '__main__':
     opt = upload_args_from_json(os.path.join("parameters", "AmazonDataset.json"))
