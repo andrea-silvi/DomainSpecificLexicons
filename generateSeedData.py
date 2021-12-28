@@ -9,7 +9,7 @@ import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
 from liblinear.liblinearutil import predict, train, problem, parameter
-
+from sklearn.metrics import precision_recall_fscore_support
 
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
@@ -24,7 +24,8 @@ def train_linear_pred(X, y):
     param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
     m = train(prob, param)
     [W, _b] = m.get_decfun()
-    predict(y, X, m)
+    p_label, p_acc, p_val = predict(y, X, m)
+    print(precision_recall_fscore_support(y, p_label))
     return W
 
 
