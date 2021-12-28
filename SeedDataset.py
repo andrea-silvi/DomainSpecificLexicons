@@ -7,12 +7,13 @@ We need [word_vector, target] -> label propagation -> [word, target]'''
 
 
 class SeedDataset(Dataset):
-    def __init__(self, data, targets):
+    def __init__(self, data, targets, glove_embeddings):
         self.data = data
         self.targets = torch.Tensor(targets)
+        self.glove_embeddings = glove_embeddings
 
     def __getitem__(self, index):
-        x = self.data[index]
+        x = self.glove_embeddings[self.data[index]]
         y = self.targets[index]
 
         return x, y
