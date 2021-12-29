@@ -4,12 +4,15 @@ Seed data are in the form of (word, score).
 
 # import argparse
 import os
+from SeedDataset import SeedDataset
 from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parseDataset
 from sklearn.feature_extraction.text import CountVectorizer
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
+
+EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
@@ -33,11 +36,9 @@ def train_linear_pred(X, y, print_overfitting=False):
 def assign_word_labels(X, w, vocabulary, f_min):
     frequencies = X.sum(axis=0)
     ind = np.where(frequencies < f_min)
-    filtered_vocabulary = {key: val for key, val in vocabulary.items() if
+    data = {key: w[val] for key, val in vocabulary.items() if
                            val not in ind and not key.startswith('negatedw')}
-    for key, val in filtered_vocabulary.items():
-        # build dataset for part 2
-        continue
+    return SeedDataset(data, EMBEDDINGS_PATH)
 
 
 if __name__ == '__main__':
