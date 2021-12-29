@@ -31,7 +31,7 @@ class RegressionModel(nn.Module):
         x = F.relu(self.bn3(self.fc_layer_3(x)))
         x = self.dp(x)
         x = F.softmax(self.bn4(self.fc_layer_4(x)), dim=1)
-        x = x * (self.max - self.min) + self.min
+        x = x * (self.high - self.low) + self.low
         x = self.output(x)
 
         return x
