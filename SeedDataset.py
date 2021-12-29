@@ -23,3 +23,9 @@ class SeedDataset(Dataset):
 
     def __len__(self):
         return len(self.data)
+
+    def get_min_score(self):
+        return min(self.scores)
+
+    def get_max_score(self):
+        return max(self.scores)
