@@ -11,13 +11,13 @@ import gc
 CHECKPOINT_PATH = "checkpoint.pt"
 
 
-def train(dataset: SeedDataset, batchSize=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
+def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
     torch.manual_seed(11)
     loss = MSELoss()
-    estop = EarlyStopping(verbose=True, path=CHECKPOINT_PATH)
+    early_stopping = EarlyStopping(verbose=True, path=CHECKPOINT_PATH)
     train_dataloader = torch.utils.data.DataLoader(
         dataset,
-        batch_size=batchSize,
+        batch_size=batch_size,
         shuffle=True,
         num_workers=int(n_workers))
     network = RegressionModel(low=dataset.get_min_score(), high=dataset.get_max_score())
@@ -35,9 +35,14 @@ def train(dataset: SeedDataset, batchSize=32, n_workers=2, lr=1e-3, n_epochs=100
             loss.backward()
             optimizer.step()
         epoch_loss = np.mean(np.array(losses))
+        early_stopping(epoch_loss, network, epoch)
+        if early_stopping.early_stop:
+            print("Early stopping")
+            break
         gc.collect()
         torch.cuda.empty_cache()
-        print(f'\tepoch: {epoch}, training loss: {epoch_loss}')
+        return network.load_state_dict(torch.load(CHECKPOINT_PATH))
+        #print(f'\tepoch: {epoch}, training loss: {epoch_loss}')
 
 
 

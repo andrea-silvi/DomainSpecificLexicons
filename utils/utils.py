@@ -3,9 +3,6 @@ import json
 import os
 
 
-
-
-
 def upload_args_from_json(file_path=os.path.join("parameters", "fixed_params.json")):
     parser = argparse.ArgumentParser(description=f'Arguments from json')
     args = parser.parse_args()

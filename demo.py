@@ -1,13 +1,27 @@
-from AmazonDataset import parseDataset
-from generateSeedData import generate_bow, train_linear_pred
+import argparse
+from AmazonDataset import parse_dataset
+from generateSeedData import generate_bow, train_linear_pred, assign_word_labels
+from train import train
 import numpy as np
 
 
-reviews, scores = parseDataset("/content/drive/MyDrive/dataset/Musical_Instruments_5.json.gz")
+#reviews, scores = parse_dataset("/content/drive/MyDrive/dataset/Musical_Instruments_5.json.gz")
 
-y = np.array(scores)
+#y = np.array(scores)
 
-X, vocabulary = generate_bow(reviews)
+#X, vocabulary = generate_bow(reviews)
 
-W = train_linear_pred(X, y)
+#W = train_linear_pred(X, y)
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
+    parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.')
+    args = parser.parse_args()
+    texts, scores = parse_dataset(args.dataset_name)
+    y = np.array(scores)
+    X, vocabulary = generate_bow(texts)
+    W = train_linear_pred(X, y)
+    seed_dataset = assign_word_labels(X, W, vocabulary, f_min=args.f_min)
+    model = train(seed_dataset)
+    #predict function to infer labels of non seed-words
