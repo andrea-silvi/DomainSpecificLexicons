@@ -1,17 +1,16 @@
 import argparse
 from AmazonDataset import parse_dataset
 from generateSeedData import generate_bow, train_linear_pred, assign_word_labels
-from train import train
+from train import train, predict
 import numpy as np
 
+# reviews, scores = parse_dataset("/content/drive/MyDrive/dataset/Musical_Instruments_5.json.gz")
 
-#reviews, scores = parse_dataset("/content/drive/MyDrive/dataset/Musical_Instruments_5.json.gz")
+# y = np.array(scores)
 
-#y = np.array(scores)
+# X, vocabulary = generate_bow(reviews)
 
-#X, vocabulary = generate_bow(reviews)
-
-#W = train_linear_pred(X, y)
+# W = train_linear_pred(X, y)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -22,6 +21,10 @@ if __name__ == '__main__':
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     W = train_linear_pred(X, y)
-    seed_dataset = assign_word_labels(X, W, vocabulary, f_min=args.f_min)
+    seed_dataset, non_seed_dataset = assign_word_labels(X, W, vocabulary, f_min=args.f_min)
     model = train(seed_dataset)
-    #predict function to infer labels of non seed-words
+    original_results = seed_dataset.get_dictionary()
+    results = predict(model, non_seed_dataset)
+    complete_results = original_results | results #needs Python 3.9!
+
+    # save results in a file?
