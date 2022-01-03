@@ -21,11 +21,11 @@ class SeedDataset(Dataset):
         self.embeddings = load_glove_model(embeddings_path, data)
 
     def __getitem__(self, index):
-        x = torch.Tensor(self.embeddings[self.words[index]])
+        x = torch.tensor(self.embeddings[self.words[index]])
         if self.split == 'train':
-            y = torch.Tensor(self.scores[index])
+            y = torch.tensor(self.scores[index])
             return x, y
-        w = self.words[index]
+        w = torch.tensor(self.words[index])
         return x, w
 
     def __len__(self):
