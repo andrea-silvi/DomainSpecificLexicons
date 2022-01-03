@@ -26,10 +26,10 @@ def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=10
     for epoch in range(n_epochs):
         losses = list()
         for wvs, scores in train_dataloader:
-            wvs.cuda()
-            scores.cuda()
+            wvs = wvs.cuda()
+            scores = scores.cuda()
             prediction = model(wvs)
-            prediction.cuda()
+            prediction = prediction.cuda()
             batch_loss = loss(prediction, scores)
             losses.append(batch_loss.item())
             loss.backward()
@@ -55,8 +55,8 @@ def predict(model, test_dataset):
         shuffle=True,
         num_workers=2)
     for wv, w in test_dataloader:
-        wv.cuda()
+        wv = wv.cuda()
         pred = model(wv)
-        for word, score in zip(w.squeeze().tolist(), pred.squeeze().tolist()):
+        for word, score in zip(w.cpu().squeeze().tolist(), pred.cpu().squeeze().tolist()):
             results[word] = score
     return results
