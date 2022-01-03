@@ -51,12 +51,12 @@ def predict(model, test_dataset):
     results = {}
     test_dataloader = torch.utils.data.DataLoader(
         test_dataset,
-        batch_size=1,
+        batch_size=64,
         shuffle=True,
         num_workers=2)
     for wv, w in test_dataloader:
         wv.cuda()
         pred = model(wv)
-        for word, score in zip(w.item(), pred.item()):
+        for word, score in zip(w.tolist(), pred.tolist()):
             results[word] = score
     return results
