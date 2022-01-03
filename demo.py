@@ -25,6 +25,6 @@ if __name__ == '__main__':
     model = train(seed_dataset)
     original_results = seed_dataset.get_dictionary()
     results = predict(model, non_seed_dataset)
-    complete_results = original_results | results #needs Python 3.9!
+    complete_results = original_results | results   # needs Python 3.9!
 
     # save results in a file?
