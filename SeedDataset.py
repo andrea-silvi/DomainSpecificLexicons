@@ -17,7 +17,7 @@ class SeedDataset(Dataset):
             self.words = list(data.keys())
             self.scores = list(data.values())
         else:
-            self.words = data
+            self.words = list(data.keys())
         self.embeddings = load_glove_model(embeddings_path, data)
 
     def __getitem__(self, index):
