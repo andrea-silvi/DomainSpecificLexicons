@@ -32,7 +32,7 @@ def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=10
             prediction = prediction.cuda()
             batch_loss = loss(prediction, scores)
             losses.append(batch_loss.item())
-            loss.backward()
+            batch_loss.backward()
             optimizer.step()
         epoch_loss = np.mean(np.array(losses))
         early_stopping(epoch_loss, model, epoch)
