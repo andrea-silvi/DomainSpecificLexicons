@@ -23,7 +23,7 @@ if __name__ == '__main__':
     complete_results = seed_dataset.get_dictionary()
     results = predict(model, non_seed_dataset)
     complete_results.update(results)
-    for i, k, v in enumerate(complete_results.items()):
+    for i, (k, v) in enumerate(complete_results.items()):
         if i > 20:
             break
         print(k, v)

@@ -36,7 +36,8 @@ def train_linear_pred(X, y, print_overfitting=False):
 
 def assign_word_labels(X, w, vocabulary, f_min):
     frequencies = X.sum(axis=0)
-    ind = np.where(frequencies < f_min)[0]
+    frequencies = np.asarray(frequencies)[0]
+    ind = np.nonzero(frequencies < f_min)[0]
     seed_data = {key: w[val] for key, val in vocabulary.items() if (val not in ind) and (not key.startswith('negatedw'))}
     non_seed_data = [key for key, val in vocabulary.items() if (val in ind) and (not key.startswith('negatedw'))]
     return SeedDataset(seed_data, EMBEDDINGS_PATH),  SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
