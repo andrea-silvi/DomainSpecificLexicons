@@ -1,6 +1,6 @@
 import argparse
 from AmazonDataset import parse_dataset
-from generateSeedData import generate_bow, train_linear_pred, assign_word_labels
+from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
 from train import train, predict
 import numpy as np
 
@@ -14,10 +14,11 @@ if __name__ == '__main__':
     print('dataset has been read.')
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
+    frequencies = get_frequencies(X)
     print('review-word bow matrix generated.')
     W = train_linear_pred(X, y)
     print('found linear coefficients.')
-    seed_dataset, non_seed_dataset = assign_word_labels(X, W, vocabulary, f_min=args.f_min)
+    seed_dataset, non_seed_dataset = assign_word_labels(frequencies, W, vocabulary, f_min=args.f_min)
     print('start of training...')
     model = train(seed_dataset)
     complete_results = seed_dataset.get_dictionary()
