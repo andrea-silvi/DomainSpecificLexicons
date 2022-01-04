@@ -4,12 +4,16 @@ Seed data are in the form of (word, score).
 
 # import argparse
 import os
+from SeedDataset import SeedDataset
 from utils.utils import upload_args_from_json
 import numpy as np
-from AmazonDataset import parseDataset
+from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
+
+EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
+
 
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
@@ -32,20 +36,8 @@ def train_linear_pred(X, y, print_overfitting=False):
 
 def assign_word_labels(X, w, vocabulary, f_min):
     frequencies = X.sum(axis=0)
-    ind = np.where(frequencies < f_min)
-    filtered_vocabulary = {key: val for key, val in vocabulary.items() if
-                           val not in ind and not key.startswith('negatedw')}
-    for key, val in filtered_vocabulary.items():
-        # build dataset for part 2
-        continue
-
-
-if __name__ == '__main__':
-    '''opt = upload_args_from_json(os.path.join("parameters", "generate_seed_data.json"))
-    if opt.isAmazon:
-        data = parseDataset(opt)
-    else:  # already a numpy array of shape (N, 2)
-        pass
-    processed_data = (data)
-    X, y = generate_bow(processed_data)
-    '''
+    frequencies = np.asarray(frequencies)[0]
+    ind = np.nonzero(frequencies < f_min)[0]
+    seed_data = {key: w[val] for key, val in vocabulary.items() if (val not in ind) and (not key.startswith('negatedw'))}
+    non_seed_data = {key: 0 for key, val in vocabulary.items() if (val in ind) and (not key.startswith('negatedw'))}
+    return SeedDataset(seed_data, EMBEDDINGS_PATH),  SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
