@@ -41,3 +41,11 @@ def assign_word_labels(X, w, vocabulary, f_min):
     seed_data = {key: w[val] for key, val in vocabulary.items() if (val not in ind) and (not key.startswith('negatedw'))}
     non_seed_data = {key: 0 for key, val in vocabulary.items() if (val in ind) and (not key.startswith('negatedw'))}
     return SeedDataset(seed_data, EMBEDDINGS_PATH),  SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
+
+def get_frequencies(X):
+    """
+    for computing frequencies from count matrix X
+    """
+    frequencies = X.sum(axis=0)
+    frequencies = np.asarray(frequencies)[0]
+    return frequencies
