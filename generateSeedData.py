@@ -9,7 +9,7 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import normalize, MinMaxScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -25,8 +25,13 @@ def generate_bow(reviews):
 def train_linear_pred(X, y, print_overfitting=False):
     w_negative = len(y[y == +1]) / len(y)
     w_positive = 1 - w_negative
+
     # we first normalize X
-    X = normalize(X, norm='l1', copy=False)
+    #TODO: check the result of this function
+    #X = normalize(X, norm='l1', copy=False)
+    scaler = MinMaxScaler()
+    X = scaler.fit_transform(X)
+
     prob = problem(y, X)
     param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
     m = train(prob, param)
