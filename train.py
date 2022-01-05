@@ -57,6 +57,6 @@ def predict(model, test_dataset):
     for wv, w in test_dataloader:
         wv = wv.cuda()
         pred = model(wv)
-        for word, score in zip(w.cpu().squeeze().tolist(), pred.cpu().squeeze().tolist()):
+        for word, score in zip(w, pred.cpu().squeeze().tolist()):
             results[word] = score
     return results
