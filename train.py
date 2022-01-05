@@ -11,7 +11,7 @@ import gc
 CHECKPOINT_PATH = "checkpoint.pt"
 
 
-def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
+def train(dataset: SeedDataset,run,  batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
     torch.manual_seed(11)
     loss = MSELoss()
     early_stopping = EarlyStopping(verbose=True, path=CHECKPOINT_PATH)
@@ -21,7 +21,11 @@ def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=10
         shuffle=True,
         num_workers=int(n_workers))
     model = RegressionModel(low=dataset.get_min_score(), high=dataset.get_max_score())
+    run["config/model"] = type(model).__name__
+    run["config/criterion"] = type(loss).__name__
+
     optimizer = optim.Adam(model.parameters(), lr=lr)
+    run["config/optimizer"] = type(optimizer).__name__
     model.cuda()
     for epoch in range(n_epochs):
         losses = list()
@@ -34,13 +38,20 @@ def train(dataset: SeedDataset, batch_size=32, n_workers=2, lr=1e-3, n_epochs=10
             losses.append(batch_loss.item())
             batch_loss.backward()
             optimizer.step()
+        #TODO: neptune epoch loss
+
         epoch_loss = np.mean(np.array(losses))
+        run["training/batch/loss"].log(epoch_loss)
         early_stopping(epoch_loss, model, epoch)
         if early_stopping.early_stop:
             print("Early stopping")
             break
         gc.collect()
         torch.cuda.empty_cache()
+
+        #TODO: save checkpoint su neptune da CHECKPOINT PATH
+        run["model_dictionary"].upload(CHECKPOINT_PATH)
+
         return model.load_state_dict(torch.load(CHECKPOINT_PATH))
         # print(f'\tepoch: {epoch}, training loss: {epoch_loss}')
 
