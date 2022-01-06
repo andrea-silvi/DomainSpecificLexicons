@@ -11,7 +11,7 @@ import gc
 CHECKPOINT_PATH = "checkpoint.pt"
 
 
-def train(dataset: SeedDataset,run,  batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
+def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
     torch.manual_seed(11)
     loss = MSELoss()
     early_stopping = EarlyStopping(verbose=True, path=CHECKPOINT_PATH)
