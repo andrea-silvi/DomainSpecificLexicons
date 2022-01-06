@@ -27,8 +27,10 @@ if __name__ == '__main__':
     print('review-word bow matrix generated.')
     W = train_linear_pred(X, y)
     print('found linear coefficients.')
+
+    glove_words = load_glove_words(EMBEDDINGS_PATH)
     seed_dataset = assign_word_labels(frequencies, W, vocabulary, f_min=args.f_min,
-                                      EMBEDDINGS_PATH = EMBEDDINGS_PATH)
+                                      EMBEDDINGS_PATH = EMBEDDINGS_PATH, glove_words=glove_words)
     print('start of training...')
 
 
@@ -36,7 +38,7 @@ if __name__ == '__main__':
     run = neptune.init(api_token=neptune_parameters["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
     complete_results = seed_dataset.get_dictionary()
-    glove_words = load_glove_words(EMBEDDINGS_PATH)
+    
     non_seed_data = {w: 0 for w in glove_words if w not in complete_results}
     non_seed_dataset = SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
     results = predict(model, non_seed_dataset)
