@@ -26,8 +26,11 @@ def load_glove_words(File):
             try:
                 split_line = line.split()
                 word = split_line[0]
-                if type(split_line[1]) != str:
-                    glove_words.add(word)
+                try:
+                  t = float(split_line[1])
+                  glove_words.add(word)
+                except ValueError:
+                  continue
             except ValueError:
                 continue
 
