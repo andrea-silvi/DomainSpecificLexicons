@@ -31,17 +31,7 @@ if __name__ == '__main__':
     print('start of training...')
 
     #neptune definition of the run
-    neptune_token = parameters["neptune_token"]
-    neptune_user = parameters["neptune_user"]
-
-    if neptune_user == "fabio":
-        neptune_project = "fbtattix/DomainSpecificLexicon"
-
-    elif neptune_user == "ulysse":
-        neptune_project = "ulysse.marquis/DomainSpecificLexicon"
-
-    elif neptune_user == "andrea":
-        neptune_project = "andrea-silvi/DomainLexicons"
+    
 
     run = neptune.init(api_token=neptune_token, project= neptune_project)  # pass your credentials
 
