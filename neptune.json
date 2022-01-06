@@ -1,0 +1,14 @@
+{
+  "Fabio": {
+    "neptune_project" : "fbtattix/DomainSpecificLexicon",
+    "neptune_token" :  "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiJiNjM5YTI3Yi03NmNmLTRhMjctOWY5MC0zNDA1ZTFkNWI4MjMifQ=="
+
+  },
+  "Andrea":{
+    "neptune_project": "andrea-silvi/DomainLexicons",
+    "neptune_token": ""
+  },
+  "Ulysse": {
+
+  }
+}
