@@ -31,7 +31,6 @@ if __name__ == '__main__':
                                       EMBEDDINGS_PATH = EMBEDDINGS_PATH)
     print('start of training...')
 
-    #neptune definition of the run
 
     neptune_parameters = parameters[args.user]
     run = neptune.init(api_token=["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
