@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
 
     neptune_parameters = parameters[args.user]
-    run = neptune.init(api_token=["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
+    run = neptune.init(api_token=neptune_parameters["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
     complete_results = seed_dataset.get_dictionary()
     glove_words = load_glove_words(EMBEDDINGS_PATH)
