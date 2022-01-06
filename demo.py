@@ -42,8 +42,7 @@ if __name__ == '__main__':
         #TODO: put your neptune project in order to make it work on your neptune (to select neptune user use parameters.json)
 
     elif neptune_user == "andrea":
-        pass
-        #TODO: put your neptune project in order to make it work on your neptune (to select neptune user use parameters.json)
+        neptune_project = "andrea-silvi/DomainLexicons"
 
     run = neptune.init(api_token=neptune_token, project= neptune_project)  # pass your credentials
 
