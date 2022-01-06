@@ -12,6 +12,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize, MaxAbsScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
+from utils.glove_loader import load_glove_words
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 
@@ -45,9 +46,10 @@ def train_linear_pred(X, y, print_overfitting=False):
 
 def assign_word_labels(frequencies, w, vocabulary, f_min):
     ind = np.nonzero(frequencies < f_min)[0]
+    glove_words = load_glove_words(EMBEDDINGS_PATH)
     seed_data = {key: w[val] for key, val in vocabulary.items() if
-                 (val not in ind) and (not key.startswith('negatedw'))}
-    non_seed_data = {key: 0 for key, val in vocabulary.items() if (val in ind) and (not key.startswith('negatedw'))}
+                 (val not in ind) and (not key.startswith('negatedw')) and key in glove_words}
+    non_seed_data = {word: 0 for word in glove_words if word not in seed_data}
     return SeedDataset(seed_data, EMBEDDINGS_PATH), SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
 
 
