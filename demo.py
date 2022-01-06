@@ -26,11 +26,12 @@ if __name__ == '__main__':
     print('start of training...')
 
     #neptune definition of the run
-    neptune_token = parameters["neptune_token"]
+
     neptune_user = parameters["neptune_user"]
 
     if neptune_user == "fabio":
         neptune_project = "fbtattix/DomainSpecificLexicon"
+        neptune_token =  "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiJiNjM5YTI3Yi03NmNmLTRhMjctOWY5MC0zNDA1ZTFkNWI4MjMifQ=="
 
     elif neptune_user == "ulysse":
         pass
