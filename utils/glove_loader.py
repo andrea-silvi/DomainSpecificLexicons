@@ -11,7 +11,8 @@ def load_glove_model(File, vocab=None):
                 word = split_line[0]
                 if vocab == None or word in vocab:
                     embedding = np.array(split_line[1:], dtype=np.float32)
-                    glove_model[word] = embedding
+                    if len(embedding) == 300:
+                        glove_model[word] = embedding
             except ValueError:
                 continue
 
@@ -26,8 +27,11 @@ def load_glove_words(File):
             try:
                 split_line = line.split()
                 word = split_line[0]
-                if type(split_line[1]) != str:
-                    glove_words.add(word)
+                try:
+                  t = float(split_line[1])
+                  glove_words.add(word)
+                except ValueError:
+                  continue
             except ValueError:
                 continue
 
