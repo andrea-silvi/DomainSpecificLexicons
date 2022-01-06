@@ -25,7 +25,7 @@ class SeedDataset(Dataset):
         if self.split == 'train':
             y = torch.tensor(self.scores[index])
             return x, y
-        w = torch.tensor(self.words[index])
+        w = self.words[index]
         return x, w
 
     def __len__(self):

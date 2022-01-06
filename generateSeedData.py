@@ -9,11 +9,12 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize
+from sklearn.preprocessing import normalize, MaxAbsScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
+from utils.glove_loader import load_glove_words
 
-EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
+
 
 
 def generate_bow(reviews):
@@ -25,8 +26,14 @@ def generate_bow(reviews):
 def train_linear_pred(X, y, print_overfitting=False):
     w_negative = len(y[y == +1]) / len(y)
     w_positive = 1 - w_negative
+
     # we first normalize X
-    X = normalize(X, norm='l1', copy=False)
+    #TODO: check the result of this function
+    #X = normalize(X, norm='l1', copy=False)
+    #scaler = MinMaxScaler() works not with sparse
+    scaler = MaxAbsScaler()
+    X = scaler.fit_transform(X)
+
     prob = problem(y, X)
     param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
     m = train(prob, param)
@@ -37,11 +44,14 @@ def train_linear_pred(X, y, print_overfitting=False):
     return W
 
 
-def assign_word_labels(frequencies, w, vocabulary, f_min):
+def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH):
     ind = np.nonzero(frequencies < f_min)[0]
-    seed_data = {key: w[val] for key, val in vocabulary.items() if (val not in ind) and (not key.startswith('negatedw'))}
-    non_seed_data = {key: 0 for key, val in vocabulary.items() if (val in ind) and (not key.startswith('negatedw'))}
-    return SeedDataset(seed_data, EMBEDDINGS_PATH),  SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
+    glove_words = load_glove_words(EMBEDDINGS_PATH)
+    seed_data = {key: w[val] for key, val in vocabulary.items() if
+                 (val not in ind) and (not key.startswith('negatedw')) and key in glove_words}
+    non_seed_data = {word: 0 for word in glove_words if word not in seed_data}
+    return SeedDataset(seed_data, EMBEDDINGS_PATH)
+
 
 def get_frequencies(X):
     """
