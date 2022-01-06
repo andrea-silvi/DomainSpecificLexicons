@@ -9,7 +9,7 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize, MinMaxScaler
+from sklearn.preprocessing import normalize, MaxAbsScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 
@@ -29,7 +29,8 @@ def train_linear_pred(X, y, print_overfitting=False):
     # we first normalize X
     #TODO: check the result of this function
     #X = normalize(X, norm='l1', copy=False)
-    scaler = MinMaxScaler()
+    #scaler = MinMaxScaler() works not with sparse
+    scaler = MaxAbsScaler()
     X = scaler.fit_transform(X)
 
     prob = problem(y, X)
