@@ -52,7 +52,7 @@ def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epo
         #TODO: save checkpoint su neptune da CHECKPOINT PATH
         run["model_dictionary"].upload(CHECKPOINT_PATH)
 
-        return model.load_state_dict(torch.load(CHECKPOINT_PATH))
+    return model.load_state_dict(torch.load(CHECKPOINT_PATH))
         # print(f'\tepoch: {epoch}, training loss: {epoch_loss}')
 
 
