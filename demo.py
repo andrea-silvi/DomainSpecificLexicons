@@ -38,8 +38,7 @@ if __name__ == '__main__':
         neptune_project = "fbtattix/DomainSpecificLexicon"
 
     elif neptune_user == "ulysse":
-        pass
-        #TODO: put your neptune project in order to make it work on your neptune (to select neptune user use parameters.json)
+        neptune_project = "ulysse.marquis/DomainSpecificLexicon"
 
     elif neptune_user == "andrea":
         neptune_project = "andrea-silvi/DomainLexicons"
