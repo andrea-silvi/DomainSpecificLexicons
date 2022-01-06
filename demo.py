@@ -11,11 +11,12 @@ from utils.glove_loader import load_glove_words
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 if __name__ == '__main__':
-    file_parameters = open("parameters.json")
+    file_parameters = open("neptune.json")
     parameters = json.load(file_parameters)
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.')
+    parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.')
     args = parser.parse_args()
     print('the arguments are ', args)
     texts, scores = parse_dataset(args.dataset_name)
@@ -32,21 +33,8 @@ if __name__ == '__main__':
 
     #neptune definition of the run
 
-    neptune_user = parameters["neptune_user"]
-
-    if neptune_user == "fabio":
-        neptune_project = "fbtattix/DomainSpecificLexicon"
-        neptune_token =  "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vYXBwLm5lcHR1bmUuYWkiLCJhcGlfdXJsIjoiaHR0cHM6Ly9hcHAubmVwdHVuZS5haSIsImFwaV9rZXkiOiJiNjM5YTI3Yi03NmNmLTRhMjctOWY5MC0zNDA1ZTFkNWI4MjMifQ=="
-
-    elif neptune_user == "ulysse":
-        pass
-        #TODO: put your neptune project in order to make it work on your neptune (to select neptune user use parameters.json)
-
-    elif neptune_user == "andrea":
-        neptune_project = "andrea-silvi/DomainLexicons"
-
-    run = neptune.init(api_token=neptune_token, project= neptune_project)  # pass your credentials
-
+    neptune_parameters = parameters[args.user]
+    run = neptune.init(api_token=["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
     complete_results = seed_dataset.get_dictionary()
     glove_words = load_glove_words(EMBEDDINGS_PATH)
