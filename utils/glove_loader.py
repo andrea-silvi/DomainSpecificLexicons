@@ -39,7 +39,7 @@ def load_glove_words(File, debug_):
                   t = float(split_line[1])
                   if not check_cast_to_float(word):
                       glove_words.add(word)
-                   else:
+                  else:
                       logging.debug("Invalid word parsed in load_glove_words : word was actually a float"=
                 
                 except ValueError:
