@@ -27,7 +27,7 @@ def check_cast_to_float(s):
     except ValueError:
         return False
 
-def load_glove_words(File, debug_):
+def load_glove_words(File, ):
     print("Loading Glove words...")
     glove_words = set()
     with open(File, 'r', encoding='utf-8') as f:
@@ -40,7 +40,7 @@ def load_glove_words(File, debug_):
                   if not check_cast_to_float(word):
                       glove_words.add(word)
                   else:
-                      logging.debug("Invalid word parsed in load_glove_words : word was actually a float")
+                      logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
                 
                 except ValueError:
                       continue
