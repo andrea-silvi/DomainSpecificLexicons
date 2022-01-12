@@ -40,10 +40,10 @@ def load_glove_words(File, debug_):
                   if not check_cast_to_float(word):
                       glove_words.add(word)
                   else:
-                      logging.debug("Invalid word parsed in load_glove_words : word was actually a float"=
+                      logging.debug("Invalid word parsed in load_glove_words : word was actually a float")
                 
                 except ValueError:
-                  continue
+                      continue
             except ValueError:
                 continue
 
