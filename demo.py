@@ -21,15 +21,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
     print('the arguments are ', args)
     texts, scores = parse_dataset(args.dataset_name)
-    print(f'dataset has been read in {time.time()-start}.')
+    print(f'dataset has been read in {int(time.time()-start)} seconds .')
     start = time.time()
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     frequencies = get_frequencies(X)
-    print(f'review-word bow matrix generated in {time.time()-start}.')
+    print(f'review-word bow matrix generated in {int(time.time()-start)} seconds.')
     start = time.time()
     W = train_linear_pred(X, y)
-    print(f'found linear coefficients in {time.time()-start}.')
+    print(f'found linear coefficients in {int(time.time()-start)} seconds.')
 
     glove_words = load_glove_words(EMBEDDINGS_PATH)
     seed_dataset = assign_word_labels(frequencies, W, vocabulary, f_min=args.f_min,
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     neptune_parameters = parameters[args.user]
     run = neptune.init(api_token=neptune_parameters["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
-    print(f'time of training: {time.time()-start}')
+    print(f'time of training: {int(time.time()-start)}')
     complete_results = seed_dataset.get_dictionary()
     
     non_seed_data = {w: 0 for w in glove_words if w not in complete_results}
