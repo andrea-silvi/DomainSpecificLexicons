@@ -9,6 +9,8 @@ import json
 import time
 from utils.glove_loader import load_glove_words
 from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 if __name__ == '__main__':
@@ -61,5 +63,15 @@ if __name__ == '__main__':
         if i > 20:
             break
         print(k, scaled[i])
+    indices_high = (-scaled).argsort()[:15]
+    indices_low = (scaled).argsort()[:15]
+    words = list(complete_results.keys())
+    print(f"THE 15 MOST HIGH")
+    for i in len(indices_high):
+        print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
+    for i in len(indices_low):
+        print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
+    print(f"Mean of the lexicon {np.mean(scaled)}")
+    plt = sns.displot(scaled, x = "score", kind = "kde")
+    plt.savefig("Distribution_words_for_score.png")
 
-    # save results in a file?
