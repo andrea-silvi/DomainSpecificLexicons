@@ -40,7 +40,8 @@ def train_linear_pred(X, y, print_overfitting=False):
     if print_overfitting:
         p_label, p_acc, p_val = predict(y, X, m)
         print(precision_recall_fscore_support(y, p_label))
-    W = np.interp(W, (W.min(), W.max()), (-1, +1))
+
+    W = np.interp(np.array(W), (np.min(W), np.max(W)), (-1, +1))
 
     return W
 
