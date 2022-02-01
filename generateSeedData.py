@@ -24,9 +24,10 @@ def generate_bow(reviews):
 
 
 def train_linear_pred(X, y, print_overfitting=False):
-    w_negative = len(y[y == +1]) / len(y)
-    w_positive = 1 - w_negative
-
+    #w_negative = len(y[y == +1]) / len(y)
+    #w_positive = 1 - w_negative
+    w_negative = 1
+    w_positive = 1
     # we first normalize X
     #TODO: check the result of this function
     #X = normalize(X, norm='l1', copy=False)
