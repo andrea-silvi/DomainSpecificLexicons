@@ -20,6 +20,8 @@ from sklearn.metrics import precision_recall_fscore_support
 from utils.glove_loader import load_glove_words
 
 
+
+
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(reviews)
