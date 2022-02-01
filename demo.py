@@ -54,9 +54,12 @@ if __name__ == '__main__':
     complete_results.update(results)
     #close the run on neptune
     run.stop()
+
+    complete_results_to_scaled = list(complete_results.values())
+    scaled = np.interp(np.array(complete_results_to_scaled), (np.min(complete_results_to_scaled), np.max(complete_results_to_scaled)), (-1, +1)).astype("float32")
     for i, (k, v) in enumerate(complete_results.items()):
         if i > 20:
             break
-        print(k, v)
+        print(k, scaled[i])
 
     # save results in a file?
