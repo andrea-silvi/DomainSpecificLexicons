@@ -8,6 +8,7 @@ import neptune.new as neptune
 import json
 import time
 from utils.glove_loader import load_glove_words
+from sklearn.preprocessing import StandardScaler
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ from utils.utils import upload_args_from_json
 import numpy as np
 from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.preprocessing import normalize, MaxAbsScaler
+from sklearn.preprocessing import normalize, MaxAbsScaler, StandardScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 from utils.glove_loader import load_glove_words
@@ -40,6 +40,8 @@ def train_linear_pred(X, y, print_overfitting=False):
     if print_overfitting:
         p_label, p_acc, p_val = predict(y, X, m)
         print(precision_recall_fscore_support(y, p_label))
+    scaler = StandardScaler()
+    W = scaler.fit_transform(W)
     return W
 
 
