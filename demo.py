@@ -67,9 +67,9 @@ if __name__ == '__main__':
     indices_low = (scaled).argsort()[:15]
     words = list(complete_results.keys())
     print(f"THE 15 MOST HIGH")
-    for i in len(indices_high):
+    for i in range(len(indices_high)):
         print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
-    for i in len(indices_low):
+    for i in range(len(indices_low)):
         print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
     print(f"Mean of the lexicon {np.mean(scaled)}")
     plt = sns.displot(scaled, x = "score", kind = "kde")
