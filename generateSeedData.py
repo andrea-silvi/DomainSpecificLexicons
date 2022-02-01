@@ -4,6 +4,11 @@ Seed data are in the form of (word, score).
 
 # import argparse
 import os
+from sklearnex import patch_sklearn
+patch_sklearn()
+from sklearn.pipeline import make_pipeline
+from sklearn.svm import LinearSVC
+
 from SeedDataset import SeedDataset
 from utils.utils import upload_args_from_json
 import numpy as np
@@ -13,8 +18,6 @@ from sklearn.preprocessing import normalize, MaxAbsScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 from utils.glove_loader import load_glove_words
-
-
 
 
 def generate_bow(reviews):
@@ -28,18 +31,13 @@ def train_linear_pred(X, y, print_overfitting=False):
     w_positive = 1 - w_negative
 
     # we first normalize X
-    #TODO: check the result of this function
-    #X = normalize(X, norm='l1', copy=False)
-    #scaler = MinMaxScaler() works not with sparse
-    scaler = MaxAbsScaler()
-    X = scaler.fit_transform(X)
-    prob = problem(y, X)
-    param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
-    m = train(prob, param)
-    [W, _b] = m.get_decfun()
-    if print_overfitting:
-        p_label, p_acc, p_val = predict(y, X, m)
-        print(precision_recall_fscore_support(y, p_label))
+    # TODO: check the result of this function
+    # X = normalize(X, norm='l1', copy=False)
+    # scaler = MinMaxScaler() works not with sparse
+    clf = make_pipeline(MaxAbsScaler(), LinearSVC(random_state=0, tol=1e-5,
+                                                  class_weight={-1: w_negative, 1: w_positive}))
+    clf.fit(X, y)
+    W = np.array(clf.named_steps['linearsvc'].coef_[0], dtype=np.float32)
     return W
 
 
