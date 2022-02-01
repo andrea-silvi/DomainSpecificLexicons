@@ -71,20 +71,21 @@ if __name__ == '__main__':
     print(f"THE 15 MOST HIGH")
     for i in range(len(indices_high)):
         if i == 0:
-            run.tags.append(f"max: {words[indices_high[i]]} : {scaled[indices_high[i]]} ")
+            run["sys/tags"].add([f"max: {words[indices_high[i]]} : {scaled[indices_high[i]]} "])
         print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
 
     print(f"THE 15 MOST LOW")
     for i in range(len(indices_low)):
         if i == 0:
-            run.tags.append(f"min: {words[indices_low[i]]} : {scaled[indices_low[i]]} ")
+            run["sys/tags"].add([f"min: {words[indices_low[i]]} : {scaled[indices_low[i]]} "])
         print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
 
     mean_value = np.mean(scaled)
     print(f"Mean of the lexicon {mean_value}")
     plt = sns.displot(scaled, kind = "kde")
     plt.savefig("Distribution_words_for_score.png")
-    run.tags.append(f"f-min: {args.f_min}")
-    run.tags.append(f"mean: {mean_value}")
+    run["sys/tags"].add([f"f-min: {args.f_min}", f"mean: {mean_value}"])
+
+
 
     run.stop()
