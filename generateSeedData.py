@@ -41,7 +41,7 @@ def train_linear_pred(X, y, print_overfitting=False):
         p_label, p_acc, p_val = predict(y, X, m)
         print(precision_recall_fscore_support(y, p_label))
 
-    W = np.interp(np.array(W), (np.min(W), np.max(W)), (-1, +1)).astype(float)
+    W = np.interp(np.array(W), (np.min(W), np.max(W)), (-1, +1)).astype("float32")
 
     return W
 
