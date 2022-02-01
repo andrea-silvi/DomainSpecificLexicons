@@ -18,10 +18,11 @@ if __name__ == '__main__':
     parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.')
     parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.')
+    parser.add_argument('--neg', type=str, required=True, help='more costly method to find better negations.')
     args = parser.parse_args()
     print('the arguments are ', args)
-    texts, scores = parse_dataset(args.dataset_name)
-    print(f'dataset has been read in {int(time.time()-start)} seconds .')
+    texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False)
+    print(f'dataset has been read in {int(time.time()-start)} seconds.')
     start = time.time()
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
@@ -41,14 +42,14 @@ if __name__ == '__main__':
     neptune_parameters = parameters[args.user]
     run = neptune.init(api_token=neptune_parameters["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
-    print(f'time of training: {int(time.time()-start)}')
+    print(f'time of training: {int(time.time()-start)} seconds')
     complete_results = seed_dataset.get_dictionary()
     
     non_seed_data = {w: 0 for w in glove_words if w not in complete_results}
     non_seed_dataset = SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
     start = time.time()
     results = predict(model, non_seed_dataset)
-    print(f'time of predictions: {time.time()-start}')
+    print(f'time of predictions: {int(time.time()-start)} seconds')
     complete_results.update(results)
     #close the run on neptune
     run.stop()

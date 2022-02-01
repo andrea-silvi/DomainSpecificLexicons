@@ -33,7 +33,6 @@ def train_linear_pred(X, y, print_overfitting=False):
     #scaler = MinMaxScaler() works not with sparse
     scaler = MaxAbsScaler()
     X = scaler.fit_transform(X)
-
     prob = problem(y, X)
     param = parameter(f'-w-1 {w_negative} -w+1 {w_positive}')
     m = train(prob, param)
