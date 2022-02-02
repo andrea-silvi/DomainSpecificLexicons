@@ -57,7 +57,7 @@ if __name__ == '__main__':
     #close the run on neptune
 
     complete_results_to_scaled = list(complete_results.values())
-    scaled = np.interp(np.array(complete_results_to_scaled), (np.min(complete_results_to_scaled), np.max(complete_results_to_scaled)), (-1, +1)).astype("float32")
+    scaled = np.array(complete_results_to_scaled)
     """
     for i, (k, v) in enumerate(complete_results.items()):
         if i > 20:
