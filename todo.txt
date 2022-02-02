@@ -1,5 +1,1 @@
-1) check scaling before svm
-2) neptune
-3) solve keyerror for words not in glove dictionary
-4) predict for glove dictionary words not for non seed words
-5) check training
+1)
