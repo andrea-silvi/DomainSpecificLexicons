@@ -35,10 +35,10 @@ def parse_dataset(dataset_name, complex_negations=False, second_ext = False, clu
                 else:
                     rev = find_complex_negations(review["reviewText"], tokenizer, parser, negations_list=['not', 'nor', 'never'])
                 score = -1 if review["overall"] < 3.0 else +1
-                year_review = review["reviewTime"].split(",")[0][1:]
-                print(year_review)
-                if second_ext:
-                    print("##################################################################################")
+                year_review = int(review["reviewTime"].split(",")[1][1:])
+
+                if second_ext and year_review in cluster :
+                    print("##################################################################################", year_review, cluster)
                 reviews.append(rev)
                 scores.append(score)
         except KeyError:
