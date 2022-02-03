@@ -116,6 +116,7 @@ if __name__ == '__main__':
 
 
     else:
+
         print('the arguments are ', args)
         texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False,
                                       args.second_extension)
