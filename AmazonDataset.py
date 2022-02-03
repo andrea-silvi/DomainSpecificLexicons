@@ -38,9 +38,12 @@ def parse_dataset(dataset_name, complex_negations=False, second_ext = False, clu
                 year_review = int(review["reviewTime"].split(",")[1][1:])
 
                 if second_ext and year_review in cluster :
-                    print("##################################################################################", year_review, cluster)
-                reviews.append(rev)
-                scores.append(score)
+                    #if we have second_ext true we want to select only reviews in a given range of years
+                    reviews.append(rev)
+                    scores.append(score)
+                elif second_ext == False :
+                    reviews.append(rev)
+                    scores.append(score)
         except KeyError:
             continue
 
