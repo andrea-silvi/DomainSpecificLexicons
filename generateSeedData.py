@@ -26,11 +26,29 @@ def train_linear_pred(X, y):
     W = np.array(clf.coef_[0], dtype=np.float32)
     return W
 
-
-def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words):
+# TODO : handle whole sentence negation
+def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words, whole_sentence_negation=False):
     ind = np.nonzero(frequencies < f_min)[0]
-    seed_data = {key: w[val] for key, val in vocabulary.items() if
+
+    if whole_sentence_negation:
+        # if we use this
+        # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
+        offset = len('negatedw')
+        negated = {
+            key[offset:] : w[val] for key, val in vocabulary.items()
+            if (val not in ind) and (key.lower().startswith('negatedw') and key in glove_words)
+        }
+        seed_data = {
+            key: (w[val] if key not in negated else (w[val] + (-negated[key]))/2)
+            for key, val in vocabulary.items() 
+            if (val not in ind) 
+            and (not key.lower().startswith('negatedw')) 
+            and key in glove_words
+        }
+    else:
+        seed_data = {key: w[val] for key, val in vocabulary.items() if
                  (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
+
     return SeedDataset(seed_data, EMBEDDINGS_PATH)
 
 
