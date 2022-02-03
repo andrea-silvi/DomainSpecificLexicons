@@ -101,7 +101,7 @@ if __name__ == '__main__':
     run = neptune.init(api_token=neptune_parameters["neptune_token"],
                        project=neptune_parameters["neptune_project"])  # pass your credentials
 
-    #in this part we check if we want to perform the second task
+    #in this part we check if we want to perform the second task sa
 
     if args.second_extension:
         run["sys/tags"].add([f"ablation"])
