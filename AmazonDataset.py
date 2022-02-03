@@ -36,7 +36,8 @@ def parse_dataset(dataset_name, complex_negations=False, second_ext = False, clu
                     rev = find_complex_negations(review["reviewText"], tokenizer, parser, negations_list=['not', 'nor', 'never'])
                 score = -1 if review["overall"] < 3.0 else +1
                 print(rev)
-                if second_ext
+                if second_ext:
+                    print("here")
                 reviews.append(rev)
                 scores.append(score)
         except KeyError:
