@@ -11,6 +11,10 @@ from utils.glove_loader import load_glove_words
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
+def split(a, n):
+    k, m = divmod(len(a), n)
+    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 if __name__ == '__main__':
@@ -22,9 +26,19 @@ if __name__ == '__main__':
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.')
     parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.')
     parser.add_argument('--neg', type=str, required=True, help='more costly method to find better negations.')
+    parser.add_argument("--second_extension", type = bool, required=False, help ="use the ablation study version", default=False)
     args = parser.parse_args()
+    #in this part we check if we want to perform the second task
+    if args.second_extension:
+        years = list(range(1995, 2015))
+        clustered_years = list(split(years, 4))
+        #for each cluster of years we perform the process
+        for cluster in clustered_years:
+            texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False,
+                                          args.second_extension, cluster)
+
     print('the arguments are ', args)
-    texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False)
+    texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False, args.second_extension)
     print(f'dataset has been read in {int(time.time()-start)} seconds.')
     start = time.time()
     y = np.array(scores)
