@@ -122,6 +122,6 @@ if __name__ == '__main__':
                                       args.second_extension)
         print(f'dataset has been read in {int(time.time() - start)} seconds.')
 
-        perform(start, texts, scores, args, run)
+        perform(texts, scores, args)
 
     run.stop()
