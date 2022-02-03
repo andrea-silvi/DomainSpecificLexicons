@@ -37,7 +37,7 @@ def parse_dataset(dataset_name, complex_negations=False, second_ext = False, clu
                 score = -1 if review["overall"] < 3.0 else +1
                 print(rev)
                 if second_ext:
-                    print("here")
+                    print("##################################################################################")
                 reviews.append(rev)
                 scores.append(score)
         except KeyError:
