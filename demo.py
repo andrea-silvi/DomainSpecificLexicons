@@ -111,8 +111,12 @@ if __name__ == '__main__':
         for cluster in clustered_years:
             texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False,
                                           args.second_extension, cluster)
-            print(f"CLUSTER {cluster}")
-            perform( texts, scores, args)
+            if len(texts) != 0:
+                #TODO manage short dataset
+                print(f"CLUSTER {cluster}")
+                perform( texts, scores, args)
+            else:
+                print(f"CLUSTER IS EMPTY")
 
 
     else:
