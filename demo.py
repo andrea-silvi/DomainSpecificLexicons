@@ -112,7 +112,7 @@ if __name__ == '__main__':
             texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False,
                                           args.second_extension, cluster)
             print(f"CLUSTER {cluster}")
-            perform(start, texts, scores, args, run)
+            perform( texts, scores, args)
 
 
     else:
