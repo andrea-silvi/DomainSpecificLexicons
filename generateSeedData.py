@@ -30,7 +30,7 @@ def train_linear_pred(X, y):
 def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words):
     ind = np.nonzero(frequencies < f_min)[0]
     seed_data = {key: w[val] for key, val in vocabulary.items() if
-                 (val not in ind) and (not key.startswith('negatedw')) and key in glove_words}
+                 (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
     return SeedDataset(seed_data, EMBEDDINGS_PATH)
 
 
