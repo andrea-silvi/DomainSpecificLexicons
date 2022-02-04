@@ -15,7 +15,7 @@ def split(a, n):
     k, m = divmod(len(a), n)
     return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
-def perform(texts, scores, args):
+def perform(texts, scores, args, cluster = None):
 
     start = time.time()
     y = np.array(scores)
@@ -55,28 +55,40 @@ def perform(texts, scores, args):
             break
         print(k, scaled[i])
     """
-    max_n = min(len(scaled), 15)
+    max_n = min(len(scaled), 10)
 
     indices_high = (-scaled).argsort()[:max_n]
     indices_low = (scaled).argsort()[:max_n]
     words = list(complete_results.keys())
 
+    #save the top and bottom words score pairs
+    top = []
+    bottom = []
     print(f"THE 15 MOST HIGH")
     for i in range(len(indices_high)):
         #if i == 0:
             #run["sys/tags"].add([f"max: {words[indices_high[i]]} : {scaled[indices_high[i]]} "])
         print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
+        top.append([words[indices_high[i]],scaled[indices_high[i]] ])
 
     print(f"THE 15 MOST LOW")
     for i in range(len(indices_low)):
         #if i == 0:
             #run["sys/tags"].add([f"min: {words[indices_low[i]]} : {scaled[indices_low[i]]} "])
         print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
+        bottom.append([words[indices_low[i]],scaled[indices_low[i]] ])
 
     mean_value = np.mean(scaled)
     print(f"Mean of the lexicon {mean_value}")
-    plt = sns.displot(scaled, kind="kde")
-    plt.savefig("Distribution_words_for_score.png")
+
+    #we filter out the values [-0.2, 0.2]
+    distribution_filtered = filter(lambda x: (x > 0.4) and (x < -0.4), scaled)
+    plt = sns.displot(distribution_filtered, kind="kde")
+    if cluster == None:
+        plt.savefig("Distribution_words_for_score.png")
+    else:
+        plt.savefig(f"Distribution_words_for_score_{cluster}.png")
+    return cluster, top, bottom
 
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
@@ -105,6 +117,7 @@ if __name__ == '__main__':
         run["sys/tags"].add([f"ablation"])
         years = list(range(1995, 2015))
         clustered_years = list(split(years, 4))
+
         #for each cluster of years we perform the process
         for cluster in clustered_years:
             texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False,
@@ -112,7 +125,7 @@ if __name__ == '__main__':
             if len(texts) != 0:
                 #TODO manage short dataset
                 print(f"CLUSTER {cluster} with length {len(texts)}")
-                perform( texts, scores, args)
+                cluster, top, bottom = perform(texts, scores, args, cluster )
             else:
                 print(f"CLUSTER  {cluster} IS EMPTY")
 
