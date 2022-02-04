@@ -39,9 +39,9 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
     """
     ind = np.nonzero(frequencies < f_min)[0]
     
-    whole_sentence_negation = negation == 'whole'
+    whole_negation = negation == 'whole'
 
-    if whole_sentence_negation:
+    if whole_negation:
         # if we use this
         # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
         offset = len('negatedw')

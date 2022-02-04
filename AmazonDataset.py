@@ -18,7 +18,7 @@ def parse_dataset(dataset_name, negation='normal'):
     ones above 3 as positive.
     """
     
-    whole_sentence_negation = negation=='whole'
+    whole_negation = negation=='whole'
     
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
@@ -26,7 +26,7 @@ def parse_dataset(dataset_name, negation='normal'):
     for review in parse(dataset_name):
         try:
             if review["overall"] != 3.0:
-                if whole_sentence_negation:
+                if whole_negation:
                     rev = whole_sentence_negation(review["reviewText"], tokenizer)
                 else:
                     rev = find_negations(review["reviewText"], tokenizer)
