@@ -21,7 +21,7 @@ def train_linear_pred(X, y):
     w_negative = len(y[y == +1]) / len(y)
     w_positive = 1 - w_negative
     # TODO: check the result of this function
-    clf = LinearSVC(random_state=0, tol=1e-5, class_weight={-1: w_negative, 1: w_positive}, fit_intercept=False)
+    clf = LinearSVC(random_state=0, tol=1e-4, class_weight={-1: w_negative, 1: w_positive}, fit_intercept=False)
     clf.fit(X, y)
     W = np.array(clf.coef_[0], dtype=np.float32)
     return W
