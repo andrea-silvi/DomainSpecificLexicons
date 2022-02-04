@@ -26,11 +26,40 @@ def train_linear_pred(X, y):
     W = np.array(clf.coef_[0], dtype=np.float32)
     return W
 
-
-def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words):
+# TODO : handle whole sentence negation
+def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words, negation='normal'):
+    """
+    creates dataset based on word - SVM scores association
+    @ params frequencies : frequency of each word, at its index in the vocabulary
+    @ params w : SVM weights
+    @ params f_min : minimal frequency threshold (words with a frequency below this threshold will be removed)*
+    @ params EMBEDDINGS_PATH : glove embeddings file path
+    @ params glove_words : glove words vocabulary
+    @ params negation : 'normal' or 'whole' depending of negation type
+    """
     ind = np.nonzero(frequencies < f_min)[0]
-    seed_data = {key: w[val] for key, val in vocabulary.items() if
-                 (val not in ind) and (not key.startswith('negatedw')) and key in glove_words}
+    
+    whole_negation = negation == 'whole'
+
+    if whole_negation:
+        # if we use this
+        # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
+        offset = len('negatedw')
+        negated = {
+            key[offset:] : w[val] for key, val in vocabulary.items()
+            if (val not in ind) and (key.lower().startswith('negatedw')) and key[offset:] in glove_words
+        }
+        seed_data = {
+            key: (w[val] if key not in negated else (w[val] + (-negated[key]))/2)
+            for key, val in vocabulary.items() 
+            if (val not in ind) 
+            and (not key.lower().startswith('negatedw')) 
+            and key in glove_words
+        }
+    else:
+        seed_data = {key: w[val] for key, val in vocabulary.items() if
+                 (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
+
     return SeedDataset(seed_data, EMBEDDINGS_PATH)
 
 

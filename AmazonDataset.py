@@ -1,10 +1,8 @@
 import gzip
 import json
 from nltk import RegexpTokenizer
-from utils.preprocessing import find_negations, find_complex_negations
+from utils.preprocessing import find_negations, whole_sentence_negation
 from nltk.parse.stanford import StanfordDependencyParser
-import wget
-import zipfile
 
 def parse(path):
     g = gzip.open(path, 'rb')
@@ -12,38 +10,27 @@ def parse(path):
         yield json.loads(l)
 
 
-def instanciate_parser(): #not used anymore
-    # We download the necessary packages for the Stanford dependency parser and position them in the project
-    wget.download('https://nlp.stanford.edu/software/stanford-corenlp-4.2.2.zip')
-    wget.download('https://nlp.stanford.edu/software/stanford-corenlp-4.2.2-models-english.jar')
-    with zipfile.ZipFile('/content/DomainSpecificLexicons/stanford-corenlp-4.2.2.zip', 'r') as zip_ref:
-        zip_ref.extractall('/content/DomainSpecificLexicons/stanford-corenlp-4.2.2')
-    # Paths to the models
-    jar_path = '/content/DomainSpecificLexicons/stanford-corenlp-4.2.2/stanford-corenlp-4.2.2.jar'
-    models_jar_path = '/content/DomainSpecificLexicons/stanford-corenlp-4.2.2-models-english.jar'
-    # We Initialize StanfordDependency Parser from the path
-    parser = StanfordDependencyParser(path_to_jar=jar_path, path_to_models_jar=models_jar_path)
-    return parser
-
-def parse_dataset(dataset_name, complex_negations=False):
+# TODO : change negation type handling (not using booleans, rather enum type or something similar)
+def parse_dataset(dataset_name, negation='normal'):
     """
     Generate a numpy array with (review, score) from a gzip file.
     We throw away reviews with scores = 3 and we consider all ones below 3 as negative, and all
     ones above 3 as positive.
     """
+    
+    whole_negation = negation=='whole'
+    
     reviews, scores = [], []
-    # We instantiate the tokenizer
     tokenizer = RegexpTokenizer(r'\w+')
-    if complex_negations: # use Stanford dependency parser to find where negations are connected to!
-        parser = instanciate_parser()
 
-    for review in parse(dataset_name): # Go through the reviews
+    for review in parse(dataset_name):
         try:
-            if review["overall"] != 3.0: # reviews scores between 0 and 5. 3 is considered neutral and discarded.
-                if not complex_negations:
-                    rev = find_negations(review["reviewText"], tokenizer)
+            if review["overall"] != 3.0:
+                if whole_negation:
+                    rev = whole_sentence_negation(review["reviewText"], tokenizer)
                 else:
-                    rev = find_complex_negations(review["reviewText"], tokenizer, parser, negations_list=['not', 'nor', 'never'])
+                    rev = find_negations(review["reviewText"], tokenizer)
+                
                 score = -1 if review["overall"] < 3.0 else +1
                 reviews.append(rev)
                 scores.append(score)
