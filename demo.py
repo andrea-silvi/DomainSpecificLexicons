@@ -79,7 +79,7 @@ def perform(texts, scores, args, cluster = None):
         bottom.append([words[indices_low[i]],scaled[indices_low[i]] ])
 
     mean_value = np.mean(scaled)
-    print(f"Mean of the lexicon {mean_value}")
+    print(f"Mean of the lexicon {mean_value} ")
 
     #we filter out the values [-0.2, 0.2]
     distribution_filtered = list((lambda x: (x > mean_value+0.2) and (x < mean_value - 0.2), scaled))
