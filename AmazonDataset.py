@@ -12,16 +12,16 @@ def parse(path):
         yield json.loads(l)
 
 
-def instanciate_parser():
+def instanciate_parser(): #not used anymore
+    # We download the necessary packages for the Stanford dependency parser and position them in the project
     wget.download('https://nlp.stanford.edu/software/stanford-corenlp-4.2.2.zip')
     wget.download('https://nlp.stanford.edu/software/stanford-corenlp-4.2.2-models-english.jar')
-
-    with zipfile.ZipFile('/content/stanford-corenlp-4.2.2.zip', 'r') as zip_ref:
-        zip_ref.extractall('/content/stanford-corenlp-4.2.2')
-    jar_path = '/content/stanford-corenlp-4.2.2/stanford-corenlp-4.2.2.jar'
-    # Path to CoreNLP model jar
-    models_jar_path = '/content/stanford-corenlp-4.2.2-models-english.jar'
-    # Initialize StanfordDependency Parser from the path
+    with zipfile.ZipFile('/content/DomainSpecificLexicons/stanford-corenlp-4.2.2.zip', 'r') as zip_ref:
+        zip_ref.extractall('/content/DomainSpecificLexicons/stanford-corenlp-4.2.2')
+    # Paths to the models
+    jar_path = '/content/DomainSpecificLexicons/stanford-corenlp-4.2.2/stanford-corenlp-4.2.2.jar'
+    models_jar_path = '/content/DomainSpecificLexicons/stanford-corenlp-4.2.2-models-english.jar'
+    # We Initialize StanfordDependency Parser from the path
     parser = StanfordDependencyParser(path_to_jar=jar_path, path_to_models_jar=models_jar_path)
     return parser
 
@@ -32,13 +32,14 @@ def parse_dataset(dataset_name, complex_negations=False):
     ones above 3 as positive.
     """
     reviews, scores = [], []
+    # We instantiate the tokenizer
     tokenizer = RegexpTokenizer(r'\w+')
-    if complex_negations:
+    if complex_negations: # use Stanford dependency parser to find where negations are connected to!
         parser = instanciate_parser()
 
-    for review in parse(dataset_name):
+    for review in parse(dataset_name): # Go through the reviews
         try:
-            if review["overall"] != 3.0:
+            if review["overall"] != 3.0: # reviews scores between 0 and 5. 3 is considered neutral and discarded.
                 if not complex_negations:
                     rev = find_negations(review["reviewText"], tokenizer)
                 else:
