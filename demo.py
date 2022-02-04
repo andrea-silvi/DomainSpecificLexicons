@@ -15,16 +15,16 @@ import seaborn as sns
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 if __name__ == '__main__':
     start = time.time()
-    file_parameters = open("neptune.json")
-    parameters = json.load(file_parameters)
+    with open("neptune.json") as neptune_file:
+        parameters = json.load(neptune_file)
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.', default=500)
     parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.', choices=['Ulysse', 'Andrea', 'Fabio'])
-    parser.add_argument('--neg', type=str, required=True, help='more costly method to find better negations.', choices=['normal', 'complex', 'whole'])
+    parser.add_argument('--neg', type=str, required=True, help='more costly method to find better negations.', choices=['normal', 'whole'], default='normal')
     args = parser.parse_args()
     print('the arguments are ', args)
-    texts, scores = parse_dataset(args.dataset_name, args.neg == 'complex', args.neg=='whole')
+    texts, scores = parse_dataset(args.dataset_name,  args.neg)
     print(f'dataset has been read in {int(time.time()-start)} seconds.')
     start = time.time()
     y = np.array(scores)
@@ -36,8 +36,11 @@ if __name__ == '__main__':
     print(f'found linear coefficients in {int(time.time()-start)} seconds.')
 
     glove_words = load_glove_words(EMBEDDINGS_PATH)
-    seed_dataset = assign_word_labels(frequencies, W, vocabulary, f_min=args.f_min,
-                                      EMBEDDINGS_PATH = EMBEDDINGS_PATH, glove_words=glove_words)
+    seed_dataset = assign_word_labels(frequencies, W, vocabulary, 
+                                      f_min=args.f_min,
+                                      EMBEDDINGS_PATH = EMBEDDINGS_PATH, 
+                                      glove_words=glove_words,
+                                     negation=args.neg)
     print('start of training...')
     start = time.time()
 
