@@ -55,8 +55,10 @@ def perform(texts, scores, args):
             break
         print(k, scaled[i])
     """
-    indices_high = (-scaled).argsort()[:15]
-    indices_low = (scaled).argsort()[:15]
+    max_n = min(len(scaled), 15)
+
+    indices_high = (-scaled).argsort()[:max_n]
+    indices_low = (scaled).argsort()[:max_n]
     words = list(complete_results.keys())
 
     print(f"THE 15 MOST HIGH")
@@ -75,11 +77,6 @@ def perform(texts, scores, args):
     print(f"Mean of the lexicon {mean_value}")
     plt = sns.displot(scaled, kind="kde")
     plt.savefig("Distribution_words_for_score.png")
-
-
-
-
-
 
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
@@ -102,8 +99,9 @@ if __name__ == '__main__':
                        project=neptune_parameters["neptune_project"])  # pass your credentials
 
     #in this part we check if we want to perform the second task sa
+    run["sys/tags"].add([f"f-min: {args.f_min}"])
 
-    if args.second_extension:
+    if bool(args.second_extension):
         run["sys/tags"].add([f"ablation"])
         years = list(range(1995, 2015))
         clustered_years = list(split(years, 4))
@@ -113,10 +111,10 @@ if __name__ == '__main__':
                                           args.second_extension, cluster)
             if len(texts) != 0:
                 #TODO manage short dataset
-                print(f"CLUSTER {cluster}")
+                print(f"CLUSTER {cluster} with length {len(texts)}")
                 perform( texts, scores, args)
             else:
-                print(f"CLUSTER IS EMPTY")
+                print(f"CLUSTER  {cluster} IS EMPTY")
 
 
     else:
