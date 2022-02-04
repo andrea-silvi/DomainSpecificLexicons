@@ -16,7 +16,7 @@ class SeedDataset(Dataset):
         if self.split == 'train':
             self.words = list(data.keys())
             # self.scores = list(data.values())
-            self.scores = np.array(data.values(), dtype=np.float32)
+            self.scores = np.array(list(data.values()), dtype=np.float32)
         else:
             self.words = list(data.keys())
         self.embeddings = load_glove_model(embeddings_path, data)
