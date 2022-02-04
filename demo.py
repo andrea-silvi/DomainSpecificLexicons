@@ -26,7 +26,7 @@ if __name__ == '__main__':
     parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
                         choices=['normal', 'whole'], default='normal')
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
-                        choices=['IMDB', 'GameStop'])
+                        choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
     print('the arguments are ', args)
     texts, scores = parse_dataset(args.dataset_name, args.neg)
@@ -62,7 +62,8 @@ if __name__ == '__main__':
     results = predict(model, non_seed_dataset)
     print(f'time of predictions: {int(time.time() - start)} seconds')
     complete_results.update(results)
-    test(lexicon=complete_results, dataset_name=args.exp)
+    if args.exp == 'exp1':
+        test(lexicon=complete_results)
     """
     complete_results_to_scaled = list(complete_results.values())
     scaled = np.array(complete_results_to_scaled)
