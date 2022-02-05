@@ -25,7 +25,7 @@ def cli_parsing():
                         choices=['normal', 'whole'], default='normal')
     parser.add_argument('--weighing', type=str, required=False, 
                         help='different methods to compute words scores knowing its negation score',
-                        default='normal', choices=['normal', "whole"])
+                        default='normal', choices=['normal', "whole", "complex"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()

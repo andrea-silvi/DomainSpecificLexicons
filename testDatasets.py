@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-def parseGameStopDataset(dataset_path='/content/drive/MyDrive/gamestop_product_reviews_dataset_sample.csv'):
+def parseGameStopDataset(dataset_path='/content/drive/MyDrive/gamestop_balanced.csv'):
     df = pd.read_csv(dataset_path)
     df = df.loc[:, ['review_description', 'rating']]
     df = df[(df['rating'] != 3)]

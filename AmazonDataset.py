@@ -2,9 +2,13 @@ import argparse
 import gzip
 import json
 from nltk import RegexpTokenizer
-from utils.preprocessing import find_negations, whole_sentence_negation
+from utils.preprocessing import find_negations, whole_sentence_negation, find_complex_negations
 import seaborn as sns
 from utils.utils import timing_wrapper
+import spacy
+
+
+
 
 def parse(path):
     g = gzip.open(path, 'rb')
@@ -20,9 +24,11 @@ def parse_dataset(dataset_name, negation='normal'):
     We throw away reviews with scores = 3 and we consider all ones below 3 as negative, and all
     ones above 3 as positive.
     """
-    
-    whole_negation = negation=='whole'
-    
+
+    whole_negation = negation == 'whole'
+    complex_negation = negation == 'complex'
+    if complex_negation:
+        parser = spacy.load("en_core_web_sm")
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
 
@@ -31,9 +37,11 @@ def parse_dataset(dataset_name, negation='normal'):
             if review["overall"] != 3.0:
                 if whole_negation:
                     rev = whole_sentence_negation(review["reviewText"], tokenizer)
+                elif complex_negation:
+                    rev = find_complex_negations(review, parser)
                 else:
                     rev = find_negations(review["reviewText"], tokenizer)
-                
+
                 score = -1 if review["overall"] < 3.0 else +1
                 reviews.append(rev)
                 scores.append(score)
@@ -70,6 +78,7 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
             continue
 
     return reviews, scores
+
 
 def distributionOverYears(dataset_name):
     """
