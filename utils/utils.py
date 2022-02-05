@@ -1,7 +1,8 @@
 import argparse
 import json
 import os
-
+from functools import wraps
+import time
 
 def upload_args_from_json(file_path=os.path.join("parameters", "fixed_params.json")):
     parser = argparse.ArgumentParser(description=f'Arguments from json')
@@ -13,3 +14,14 @@ def upload_args_from_json(file_path=os.path.join("parameters", "fixed_params.jso
         setattr(args, option, option_value)
     setattr(args, "runNumber", 0)
     return args
+
+def timing_wrapper(message):
+    def f(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            start = time.time()
+            res = func(*args, **kwargs)
+            print(message, f': {int(time.time() - start)} seconds.')
+            return res
+        return wrapper
+    return f
