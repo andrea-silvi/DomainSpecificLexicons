@@ -13,7 +13,8 @@ def calculate_sentiment(tokens, lexicon):
 def calculate_statistics(df, tokenizer, lexicon):
     df['review'] = df['review'].apply(lambda x: tokenizer.tokenize(x.lower()))
     df['prediction'] = df['review'].apply(lambda x: calculate_sentiment(x, lexicon))
-    threshold = df['prediction'].mean()
+    fraction_negatives = (df["sentiment"] == -1).sum()/len(df["sentiment"])
+    threshold = np.percentile(df['prediction'], 100*fraction_negatives)
     df['prediction'] = df['prediction'].apply(lambda x: -1 if x < threshold else 1)
     print(f'Accuracy: {(df["prediction"] == df["sentiment"]).sum() / len(df["prediction"])}')
     scores = precision_recall_fscore_support(df["sentiment"], df["prediction"])
