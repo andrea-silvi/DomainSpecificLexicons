@@ -82,8 +82,9 @@ def perform(texts, scores, args, cluster = None):
     print(f"Mean of the lexicon {mean_value} ")
 
     #we filter out the values [-0.2, 0.2]
-    distribution_filtered = list(filter(lambda x: (x > mean_value+0.2) and (x < mean_value - 0.2), scaled))
-    plt = sns.displot(distribution_filtered, kind="kde")
+    distribution_filtered = list(filter(lambda x: (x > 0.2) and (x <  - 0.2), scaled))
+    plt = sns.displot(distribution_filtered, kind="kde").set(title = f'Cluster {cluster} lenght {len(distribution_filtered)}')
+
     if cluster == None:
         plt.savefig("Distribution_words_for_score.png")
     else:
