@@ -10,6 +10,7 @@ import time
 from utils.glove_loader import load_glove_words
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
+import pandas as pd
 
 def split(a, n):
     k, m = divmod(len(a), n)
@@ -89,7 +90,7 @@ def perform(texts, scores, args, cluster = None):
         plt.savefig("Distribution_words_for_score.png")
     else:
         plt.savefig(f"Distribution_words_for_score_{cluster}.png")
-    return cluster, top, bottom
+    return words, scaled
 
 
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
@@ -105,6 +106,7 @@ if __name__ == '__main__':
     parser.add_argument("--second_extension", type = bool, required=False, help ="use the ablation study version", default=False)
     args = parser.parse_args()
 
+    groups_cluster = 4
     #start the neptune monitoring
     neptune_parameters = parameters[args.user]
 
@@ -117,17 +119,31 @@ if __name__ == '__main__':
     if bool(args.second_extension):
         run["sys/tags"].add([f"ablation"])
         years = list(range(1995, 2015))
-        clustered_years = list(split(years, 4))
-
+        clustered_years = list(split(years, groups_cluster))
+        first_iter_flag = True
         #for each cluster of years we perform the process
+        dict_final = None
         for cluster in clustered_years:
             texts, scores = parse_dataset_by_year(args.dataset_name, cluster)
             if len(texts) != 0:
                 #TODO manage short dataset
                 print(f"CLUSTER {cluster} with length {len(texts)}")
-                cluster, top, bottom = perform(texts, scores, args, cluster )
+                words, scaled_scores = perform(texts, scores, args, cluster )
+                if first_iter_flag:
+                    first_iter_flag = False
+                    dict_final = dict.fromkeys(words, [])
+                    for i in range(len(words)):
+                        word = words[i]
+                        dict_final[word].append(scaled_scores[i])
+                else:
+                    for i in range(len(words)):
+                        word = words[i]
+                        dict_final[word].append(scaled_scores[i])
+
             else:
                 print(f"CLUSTER  {cluster} IS EMPTY")
+        final_dataframe = pd.DataFrame.from_dict(dict_final, orient='index')
+        final_dataframe.to_csv(f"scores_per_year_cluster_{groups_cluster}.csv")
 
 
     else:
