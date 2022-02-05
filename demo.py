@@ -17,6 +17,7 @@ if __name__ == '__main__':
     start = time.time()
     with open("neptune.json") as neptune_file:
         parameters = json.load(neptune_file)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.',
@@ -25,12 +26,17 @@ if __name__ == '__main__':
                         choices=['Ulysse', 'Andrea', 'Fabio'])
     parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
                         choices=['normal', 'whole'], default='normal')
+    parser.add_argument('--weighing', type=str, required=False, 
+                        help='different methods to compute words scores knowing its negation score',
+                        default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
     print('the arguments are ', args)
+
     texts, scores = parse_dataset(args.dataset_name, args.neg)
     print(f'dataset has been read in {int(time.time() - start)} seconds.')
+
     start = time.time()
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
@@ -45,7 +51,7 @@ if __name__ == '__main__':
                                       f_min=args.f_min,
                                       EMBEDDINGS_PATH=EMBEDDINGS_PATH,
                                       glove_words=glove_words,
-                                      negation=args.neg)
+                                      weighing=args.weighing)
     print('start of training...')
     start = time.time()
 

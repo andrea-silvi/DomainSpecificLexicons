@@ -33,7 +33,7 @@ def train_linear_pred(X, y):
     return W
 
 # TODO : handle whole sentence negation
-def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words, negation='normal'):
+def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words, weighing='normal'):
     """
     creates dataset based on word - SVM scores association
     @ params frequencies : frequency of each word, at its index in the vocabulary
@@ -41,13 +41,13 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
     @ params f_min : minimal frequency threshold (words with a frequency below this threshold will be removed)*
     @ params EMBEDDINGS_PATH : glove embeddings file path
     @ params glove_words : glove words vocabulary
-    @ params negation : 'normal' or 'whole' depending of negation type
+    @ params weighing : 'normal' : just use SVM scores. 'whole' : use average of score and opposite of the negation if possible
     """
     ind = np.nonzero(frequencies < f_min)[0]
 
-    whole_negation = negation == 'whole'
+    whole_weighing = weighing == 'whole'
 
-    if whole_negation:
+    if whole_weighing:
         # if we use this
         # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
         offset = len('negatedw')
