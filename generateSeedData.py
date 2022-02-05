@@ -10,7 +10,6 @@ import numpy as np
 from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import normalize, MaxAbsScaler, StandardScaler
-from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 from utils.glove_loader import load_glove_words
 from utils.utils import timing_wrapper
