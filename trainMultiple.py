@@ -11,6 +11,7 @@ import time
 from utils.glove_loader import load_glove_words
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
+import pandas as pd
 
 def split(a, n):
     k, m = divmod(len(a), n)
@@ -97,3 +98,20 @@ if __name__ == '__main__':
     #for each cluster of years we perform the process
     for cluster in clustered_years:
         createLexicon(arguments, cluster)
+        if first_iter_flag:
+            first_iter_flag = False
+            dict_final = dict.fromkeys(words, [])
+            for i in range(len(words)):
+                word = words[i]
+                dict_final[word].append(scaled_scores[i])
+        else:
+            for i in range(len(words)):
+                word = words[i]
+                dict_final[word].append(scaled_scores[i])
+
+
+        print(f"CLUSTER  {cluster} IS EMPTY")
+        final_dataframe = pd.DataFrame.from_dict(dict_final, orient='index')
+        final_dataframe.to_csv(f"scores_per_year_cluster_{groups_cluster}.csv")
+
+
