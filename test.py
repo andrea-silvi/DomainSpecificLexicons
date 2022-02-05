@@ -1,5 +1,5 @@
 from nltk import RegexpTokenizer
-from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 from testDatasets import parseIMDBDataset, parseGameStopDataset
 import numpy as np
 
@@ -17,10 +17,17 @@ def calculate_statistics(df, tokenizer, lexicon):
     fraction_negatives = (df["sentiment"] == -1).sum()/len(df["sentiment"])
     threshold = np.percentile(df['prediction'], 100*fraction_negatives)
     df['prediction'] = df['prediction'].apply(lambda x: -1 if x < threshold else 1)
-    print(f'Accuracy: {(df["prediction"] == df["sentiment"]).sum() / len(df["prediction"])}')
-    scores = precision_recall_fscore_support(df["sentiment"], df["prediction"])
-    print(f'Negatives Precision: {scores[0][0]}, Recall: {scores[1][0]}, F-Score: {scores[2][0]}')
-    print(f'Positives Precision: {scores[0][1]}, Recall: {scores[1][1]}, F-Score: {scores[2][1]}')
+
+    acc = accuracy_score(df["sentiment"], df["prediction"])
+    pr = precision_score(df["sentiment"], df["prediction"], average='macro')
+    rec = recall_score(df["sentiment"], df["prediction"], average='macro')
+    fscore = f1_score(df["sentiment"], df["prediction"], average='macro')
+
+    print(f"Accuracy : {acc}")
+    print(f"Precision : {pr}")
+    print(f"Recall : {rec}")
+    print(f"F1 score : {fscore}")
+
 
 def test(lexicon):
     tokenizer = RegexpTokenizer(r'\w+')
