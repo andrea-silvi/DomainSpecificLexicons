@@ -21,7 +21,7 @@ def timing_wrapper(message):
         def wrapper(*args, **kwargs):
             start = time.time()
             res = func(*args, **kwargs)
-            print(message, ': {int(time.time() - start)} seconds.')
+            print(message, f': {int(time.time() - start)} seconds.')
             return res
         return wrapper
     return f
