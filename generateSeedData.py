@@ -5,8 +5,14 @@ Seed data are in the form of (word, score).
 from sklearn.svm import LinearSVC
 
 from SeedDataset import SeedDataset
+from utils.utils import upload_args_from_json
 import numpy as np
+from AmazonDataset import parse_dataset
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.preprocessing import normalize, MaxAbsScaler, StandardScaler
+from liblinear.liblinearutil import predict, train, problem, parameter
+from sklearn.metrics import precision_recall_fscore_support
+from utils.glove_loader import load_glove_words
 
 
 
@@ -38,7 +44,7 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
     @ params negation : 'normal' or 'whole' depending of negation type
     """
     ind = np.nonzero(frequencies < f_min)[0]
-    
+
     whole_negation = negation == 'whole'
 
     if whole_negation:
@@ -51,9 +57,9 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
         }
         seed_data = {
             key: (w[val] if key not in negated else (w[val] + (-negated[key]))/2)
-            for key, val in vocabulary.items() 
-            if (val not in ind) 
-            and (not key.lower().startswith('negatedw')) 
+            for key, val in vocabulary.items()
+            if (val not in ind)
+            and (not key.lower().startswith('negatedw'))
             and key in glove_words
         }
     else:
