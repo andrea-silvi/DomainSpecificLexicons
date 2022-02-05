@@ -71,7 +71,7 @@ def perform(texts, scores, args, cluster = None):
         print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
         top.append([words[indices_high[i]],scaled[indices_high[i]] ])
 
-    print(f"THE 15 MOST LOW")
+    print(f"THE 15 MOST   LOW")
     for i in range(len(indices_low)):
         #if i == 0:
             #run["sys/tags"].add([f"min: {words[indices_low[i]]} : {scaled[indices_low[i]]} "])
