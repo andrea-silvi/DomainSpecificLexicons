@@ -13,16 +13,17 @@ from sklearn.preprocessing import normalize, MaxAbsScaler, StandardScaler
 from liblinear.liblinearutil import predict, train, problem, parameter
 from sklearn.metrics import precision_recall_fscore_support
 from utils.glove_loader import load_glove_words
+from utils.utils import timing_wrapper
 
 
 
-
+@timing_wrapper("BOW generation")
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(reviews)
     return X, vectorizer.vocabulary_
 
-
+@timing_wrapper("SVM training")
 def train_linear_pred(X, y):
     w_negative = len(y[y == +1]) / len(y)
     w_positive = 1 - w_negative

@@ -4,6 +4,7 @@ import json
 from nltk import RegexpTokenizer
 from utils.preprocessing import find_negations, whole_sentence_negation
 import seaborn as sns
+from utils.utils import timing_wrapper
 
 def parse(path):
     g = gzip.open(path, 'rb')
@@ -12,6 +13,7 @@ def parse(path):
 
 
 # TODO : change negation type handling (not using booleans, rather enum type or something similar)
+@timing_wrapper("dataset parsing")
 def parse_dataset(dataset_name, negation='normal'):
     """
     Generate a numpy array with (review, score) from a gzip file.

@@ -1,8 +1,9 @@
 import numpy as np
 import logging
+from utils.utils import timing_wrapper
 logger = logging.getLogger()
 
-
+@timing_wrapper("Glove model loading")
 def load_glove_model(File, vocab=None):
     print("Loading Glove Model...")
     glove_model = {}
@@ -27,6 +28,7 @@ def check_cast_to_float(s):
     except ValueError:
         return False
 
+@timing_wrapper("Glove words loading")
 def load_glove_words(File, ):
     print("Loading Glove words...")
     glove_words = set()
