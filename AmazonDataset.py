@@ -84,8 +84,9 @@ def distributionOverYears(dataset_name):
         except KeyError:
             continue
     for k, v in reviewsPerYear.items():
-        print(f'N. of reviews for year {k}: v.')
+        print(f'N. of reviews for year {k}: {v}.')
         plt = sns.histplot(data=reviewsPerYear)
+        plt.savefig("Distribution_reviews_per_year.png")
 
 
 if __name__ == '__main__':
