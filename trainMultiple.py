@@ -95,23 +95,14 @@ if __name__ == '__main__':
     years = list(range(1995, 2015))
     clustered_years = list(split(years, 4))
 
-    #for each cluster of years we perform the process
-    for cluster in clustered_years:
-        createLexicon(arguments, cluster)
-        if first_iter_flag:
-            first_iter_flag = False
-            dict_final = dict.fromkeys(words, [])
-            for i in range(len(words)):
-                word = words[i]
-                dict_final[word].append(scaled_scores[i])
-        else:
-            for i in range(len(words)):
-                word = words[i]
-                dict_final[word].append(scaled_scores[i])
-
-
-        print(f"CLUSTER  {cluster} IS EMPTY")
+    # for each cluster of years we perform the process
+    for i, cluster in enumerate(clustered_years):
+        lexicon = createLexicon(arguments, cluster)
+        if i == 0:
+            dict_final = dict.fromkeys(lexicon.keys(), [])
+        for word, sentiment in lexicon.items():
+            dict_final[word].append(sentiment)
         final_dataframe = pd.DataFrame.from_dict(dict_final, orient='index')
-        final_dataframe.to_csv(f"scores_per_year_cluster_{groups_cluster}.csv")
+        final_dataframe.to_csv(f"scores_per_year_cluster_{cluster}.csv")
 
 
