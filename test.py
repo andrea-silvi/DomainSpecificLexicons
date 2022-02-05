@@ -1,6 +1,7 @@
 from nltk import RegexpTokenizer
 from sklearn.metrics import precision_recall_fscore_support
 from testDatasets import parseIMDBDataset, parseGameStopDataset
+import numpy as np
 
 # TODO : instead of 0 for unknown words, use average sentiment score ?
 def calculate_sentiment(tokens, lexicon):
