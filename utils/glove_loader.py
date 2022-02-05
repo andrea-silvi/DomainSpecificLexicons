@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+
 logger = logging.getLogger()
 
 
@@ -20,12 +21,14 @@ def load_glove_model(File, vocab=None):
 
     return glove_model
 
+
 def check_cast_to_float(s):
     try:
         x = float(s)
         return True
     except ValueError:
         return False
+
 
 def load_glove_words(File, ):
     print("Loading Glove words...")
@@ -36,14 +39,14 @@ def load_glove_words(File, ):
                 split_line = line.split()
                 word = split_line[0]
                 try:
-                  t = float(split_line[1])
-                  if not check_cast_to_float(word):
-                      glove_words.add(word)
-                  else:
-                      logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
-                
+                    t = float(split_line[1])
+                    if not check_cast_to_float(word):
+                        glove_words.add(word)
+                    else:
+                        logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
+
                 except ValueError:
-                      continue
+                    continue
             except ValueError:
                 continue
 
