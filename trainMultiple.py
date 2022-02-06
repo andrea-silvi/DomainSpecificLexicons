@@ -99,10 +99,9 @@ if __name__ == '__main__':
     for i, cluster in enumerate(clustered_years):
         lexicon = createLexicon(arguments, cluster)
         if i == 0:
-            dict_final = dict.fromkeys(lexicon.keys(), [])
-        for word, sentiment in lexicon.items():
-            dict_final[word].append(sentiment)
-        final_dataframe = pd.DataFrame.from_dict(dict_final, orient='index')
-        final_dataframe.to_csv(f"scores_per_year_cluster_{cluster}.csv")
-
+            final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index')
+        else:
+            for word, sentiment in lexicon.items():
+                final_dataframe.loc[word, i] = sentiment
+    final_dataframe.to_csv(f"scores_per_year_cluster.csv")
 
