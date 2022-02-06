@@ -28,7 +28,7 @@ def parse_dataset(dataset_name, negation='normal'):
     whole_negation = negation == 'whole'
     complex_negation = negation == 'complex'
     if complex_negation:
-        parser = spacy.load("en_core_web_sm")
+        nlp_parser = spacy.load("en_core_web_sm")
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
 
@@ -38,7 +38,7 @@ def parse_dataset(dataset_name, negation='normal'):
                 if whole_negation:
                     rev = whole_sentence_negation(review["reviewText"], tokenizer)
                 elif complex_negation:
-                    rev = find_complex_negations(review, parser)
+                    rev = find_complex_negations(review, nlp_parser)
                 else:
                     rev = find_negations(review["reviewText"], tokenizer)
 
@@ -58,6 +58,9 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
     ones above 3 as positive.
     """
     whole_negation = negation == 'whole'
+    complex_negation = negation == 'complex'
+    if complex_negation:
+        nlp_parser = spacy.load("en_core_web_sm")
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
 
@@ -68,6 +71,8 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
                 if review["overall"] != 3.0:
                     if whole_negation:
                         rev = whole_sentence_negation(review["reviewText"], tokenizer)
+                    elif complex_negation:
+                        rev = find_complex_negations(review, nlp_parser)
                     else:
                         rev = find_negations(review["reviewText"], tokenizer)
 

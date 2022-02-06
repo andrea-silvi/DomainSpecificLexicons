@@ -22,10 +22,10 @@ def cli_parsing():
     parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.',
                         choices=['Ulysse', 'Andrea', 'Fabio'])
     parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
-                        choices=['normal', 'whole'], default='normal')
+                        choices=['normal', 'whole', 'complex'], default='normal')
     parser.add_argument('--weighing', type=str, required=False, 
                         help='different methods to compute words scores knowing its negation score',
-                        default='normal', choices=['normal', "whole", "complex"])
+                        default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
