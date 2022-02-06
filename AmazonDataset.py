@@ -6,7 +6,7 @@ from utils.preprocessing import find_negations, whole_sentence_negation, find_co
 import seaborn as sns
 from utils.utils import timing_wrapper
 import spacy
-
+import time
 
 
 
@@ -29,16 +29,22 @@ def parse_dataset(dataset_name, negation='normal'):
     complex_negation = negation == 'complex'
     if complex_negation:
         nlp_parser = spacy.load("en_core_web_sm")
+        for component in ["tagger", "ner"]:
+          nlp_parser.remove_pipe(component)
+
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
-
-    for review in parse(dataset_name):
+    a_time = time.time()
+    for i, review in enumerate(parse(dataset_name)):
         try:
             if review["overall"] != 3.0:
                 if whole_negation:
                     rev = whole_sentence_negation(review["reviewText"], tokenizer)
                 elif complex_negation:
-                    rev = find_complex_negations(review, nlp_parser)
+                    rev = find_complex_negations(review["reviewText"], nlp_parser)
+                    if i %1000 == 0:
+                      print(f'{i}th document read in {time.time()-a_time}.')
+                      a_time = time.time()
                 else:
                     rev = find_negations(review["reviewText"], tokenizer)
 
@@ -61,6 +67,8 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
     complex_negation = negation == 'complex'
     if complex_negation:
         nlp_parser = spacy.load("en_core_web_sm")
+        for component in ["tagger", "ner"]:
+            nlp_parser.remove_pipe(component)
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
 
