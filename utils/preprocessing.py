@@ -57,19 +57,28 @@ def whole_sentence_negation(review, tokenizer, negation_tokens=NEGATION_TOKENS):
 
 
 def find_complex_negations(review, parser):
+    """
+        sentence negation processing :
+        we negate the words which are referenced through a "neg" dependency edge of spacy parser.
+        - I did not really like the movie.
+        >> I did really NEGATEDWlike the movie.
+        """
     negation_prefix = 'NEGATEDW'
     complete_tokens = []
     review = review.lower()
     for sent in sent_tokenize(review):
         doc = parser(sent)
         final_tokens = [w.text for w in doc]
+        idx_to_delete = []
         for i, token in enumerate(doc):
             if token.dep == neg:
-                del final_tokens[i]
+                idx_to_delete.append(i)
                 for j, final_token in enumerate(final_tokens):
                     if final_token == str(token.head):
                         final_tokens[j] = negation_prefix + final_token
                         break
+        for index, i in enumerate(idx_to_delete):
+            del final_tokens[i-index]
         complete_tokens = complete_tokens + final_tokens
     return ' '.join(complete_tokens).strip()
 
