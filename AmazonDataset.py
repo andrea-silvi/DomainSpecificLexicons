@@ -42,7 +42,7 @@ def parse_dataset(dataset_name, negation='normal'):
                     rev = whole_sentence_negation(review["reviewText"], tokenizer)
                 elif complex_negation:
                     rev = find_complex_negations(review["reviewText"], nlp_parser)
-                    if i % 100000 == 0 and i != 0:
+                    if i % 250000 == 0 and i != 0:
                         print(f'{i} documents read in {time.time() - new_time}.')
                         new_time = time.time()
                 else:
