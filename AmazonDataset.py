@@ -29,8 +29,11 @@ def parse_dataset(dataset_name, negation='normal'):
     complex_negation = negation == 'complex'
     if complex_negation:
         nlp_parser = spacy.load("en_core_web_sm")
-        for component in ["tagger", "ner"]:
-          nlp_parser.remove_pipe(component)
+        print(nlp_parser.pipe_names)
+        for component in nlp_parser.pipe_names:
+            if component != 'parser':
+                nlp_parser.remove_pipe(component)
+        print(nlp_parser.pipe_names)
 
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
