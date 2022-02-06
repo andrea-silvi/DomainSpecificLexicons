@@ -72,7 +72,7 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
                     if whole_negation:
                         rev = whole_sentence_negation(review["reviewText"], tokenizer)
                     elif complex_negation:
-                        rev = find_complex_negations(review, nlp_parser)
+                        rev = find_complex_negations(review["reviewText"], nlp_parser)
                     else:
                         rev = find_negations(review["reviewText"], tokenizer)
 
