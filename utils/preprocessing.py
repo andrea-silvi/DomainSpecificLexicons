@@ -2,6 +2,8 @@ import nltk
 
 nltk.download("stopwords")
 nltk.download('punkt')
+import spacy
+from spacy.symbols import neg
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize
 
@@ -54,25 +56,31 @@ def whole_sentence_negation(review, tokenizer, negation_tokens=NEGATION_TOKENS):
     return ' '.join(result)
 
 
-def find_complex_negations(review, tokenizer, parser, negations_list):
-    tokens = tokenizer.tokenize(review)
-    if 'not' in tokens:
-        result = parser.raw_parse(review)
-        dependency = result.__next__()
-        for dep in list(dependency.triples()):
-            if str(dep[2][0]) in negations_list:
-                for i, token in enumerate(tokens):
-                    if token == str(dep[0][0]):
-                        tokens[i] = 'NEGATEDW' + tokens[i]
+def find_complex_negations(review, parser):
+    """
+        sentence negation processing :
+        we negate the words which are referenced through a "neg" dependency edge of spacy parser.
+        - I did not really like the movie.
+        >> I did really NEGATEDWlike the movie.
+        """
+    negation_prefix = 'NEGATEDW'
+    complete_tokens = []
+    review = review.lower()
+    for sent in sent_tokenize(review):
+        doc = parser(sent)
+        final_tokens = [w.text for w in doc]
+        idx_to_delete = []
+        for i, token in enumerate(doc):
+            if token.dep == neg:
+                idx_to_delete.append(i)
+                for j, final_token in enumerate(final_tokens):
+                    if final_token == str(token.head):
+                        final_tokens[j] = negation_prefix + final_token
                         break
-                    elif token == 'NEGATEDW' + str(dep[0][0]):
-                        tokens[i] = str(dep[0][0])
-                        break
-        tokens = list(filter(lambda w: w not in negations_list, tokens))
-    clean_review = ''
-    for t in tokens:
-        clean_review = clean_review + ' ' + t.lower()
-    return clean_review.strip()
+        for index, i in enumerate(idx_to_delete):
+            del final_tokens[i-index]
+        complete_tokens = complete_tokens + final_tokens
+    return ' '.join(complete_tokens).strip()
 
 
 if __name__ == '__main__':
