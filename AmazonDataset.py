@@ -63,6 +63,7 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
     Generate a numpy array with (review, score) from a gzip file.
     We throw away reviews with scores = 3 and we consider all ones below 3 as negative, and all
     ones above 3 as positive.
+
     """
     whole_negation = negation == 'whole'
     complex_negation = negation == 'complex'
