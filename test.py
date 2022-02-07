@@ -1,6 +1,5 @@
-import numpy as np
 from nltk import RegexpTokenizer
-from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
+from sklearn.metrics import accuracy_score
 from testDatasets import parseIMDBDataset, parseGameStopDataset
 
 
