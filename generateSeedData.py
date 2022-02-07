@@ -56,7 +56,7 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
             if (val not in ind) and (key.lower().startswith('negatedw')) and key[offset:] in glove_words
         }
         seed_data = {
-            key: (w[val] if key not in negated else (w[val] + (-negated[key]))/2)
+            key: (w[val] if key not in negated else (w[val] + negated[key])/2)
             for key, val in vocabulary.items()
             if (val not in ind)
             and (not key.lower().startswith('negatedw'))
