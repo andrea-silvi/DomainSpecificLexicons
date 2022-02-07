@@ -62,6 +62,15 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
             and (not key.lower().startswith('negatedw'))
             and key in glove_words
         }
+
+        # printing some words 
+        words = {word for word in negated if word in seed_data}
+        words = {word : {"n" : negated[word] , "p" : w[vocabulary[word]] , "o": seed_data[word] } for word in words if abs(w[vocabulary[word]]) > 0.2 }
+
+        for i, word in enumerate(words):
+            print(f"{word} : negated score : "+str({words[word]['n']})+" | SVM score : "+str({words[word]['p']})+" | overall score :"+str({words[word]['o']}))
+            if i >= 24:
+                break
     else:
         seed_data = {key: w[val] for key, val in vocabulary.items() if
                  (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
