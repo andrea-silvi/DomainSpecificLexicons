@@ -28,6 +28,12 @@ def cli_parsing():
                         default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
+    parser.add_argument('--years', '--list', nargs='+', required=False, help='List of couple of years if experiment 2.')
+    parser.add_argument('--subreddits', '--list', nargs='+', required=False, help='List of subreddits if experiment 3.')
+
+
+    # Use like:
+    # python arg.py -l 1234 2345 3456 4567
     args = parser.parse_args()
     print('the arguments are ', args)
     return args
@@ -37,13 +43,15 @@ def cli_parsing():
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 
 
-def createLexicon(args, cluster=None):
+def createLexicon(args, cluster=None, subreddit=None):
     with open("neptune.json") as neptune_file:
         parameters = json.load(neptune_file)
-    if cluster is None:
+    if args.exp == 'exp1':
         texts, scores = parse_dataset(args.dataset_name, args.neg)
-    else:
+    elif args.exp == 'exp2':
         texts, scores = parse_dataset_by_year(args.dataset_name, cluster, args.neg)
+    else:
+        texts, scores = parse_subreddit(subreddit, args.neg)
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     frequencies = get_frequencies(X)
