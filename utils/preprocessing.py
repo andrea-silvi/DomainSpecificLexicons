@@ -9,7 +9,7 @@ from nltk.tokenize import sent_tokenize
 
 STOPWORDS = stopwords.words('english')
 
-NEGATION_TOKENS = {"not", "but", "never"}  # example
+NEGATION_TOKENS = {"not",}  # example
 
 
 # todo : add stopwords removal option (STOPWORDS \ NEGATION_TOKENS)

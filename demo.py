@@ -8,6 +8,7 @@ import numpy as np
 import neptune.new as neptune
 import json
 import time
+import gc
 from utils.glove_loader import load_glove_words
 from utils.utils import timing_wrapper
 from sklearn.preprocessing import StandardScaler
@@ -62,9 +63,15 @@ def createLexicon(args, cluster=None):
     complete_results = seed_dataset.get_dictionary()
     non_seed_data = {w: 0 for w in glove_words if w not in complete_results}
     non_seed_dataset = SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
+
+    # attempt at saving memory
+    del(seed_dataset)
+    gc.collect()
+
     results = predict(model, non_seed_dataset)
     complete_results.update(results)
     run.stop()
+
     if args.exp == 'exp1':
         test(lexicon=complete_results)
     elif args.exp == 'exp2':
