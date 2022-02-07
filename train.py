@@ -33,6 +33,7 @@ def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epo
         for wvs, scores in train_dataloader:
             optimizer.zero_grad()
             wvs = wvs.cuda()
+            scores = scores.reshape(-1, 1)
             scores = scores.cuda()
             prediction = model(wvs)
             prediction = prediction.cuda()
