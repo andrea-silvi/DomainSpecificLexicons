@@ -67,7 +67,7 @@ def perform(texts, scores, args, cluster = None):
     mean_value = np.mean(scaled)
     print(f"Mean of the lexicon {mean_value} ")
 
-    #we filter out the values [-0.2, 0.2]
+    #we filter out the values [-0. 2, 0.2]
     distribution_filtered = list(filter(lambda x: (x > mean_value+0.2) and (x < mean_value - 0.2), scaled))
     plt = sns.displot(distribution_filtered, kind="kde")
     if cluster == None:
