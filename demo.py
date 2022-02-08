@@ -2,6 +2,7 @@ import argparse
 from AmazonDataset import parse_dataset, parse_dataset_by_year
 from SeedDataset import SeedDataset
 from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
+from subredditDataset import parse_subreddit
 from train import train, predict
 from test import test
 import numpy as np
@@ -30,9 +31,9 @@ def cli_parsing():
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
     if args.exp == 'exp2':
-        args.years = input("Enter list of couple of years for experiment 2.")
+        args.years = input("Enter list of couple of years for experiment 2.").split()
     elif args.exp == 'exp3':
-        args.subreddits = input("Enter list of subreddits for experiment 3.")
+        args.subreddits = input("Enter list of subreddits for experiment 3.").split()
 
 
     # Use like:
