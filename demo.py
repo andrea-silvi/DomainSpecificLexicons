@@ -55,7 +55,7 @@ def createLexicon(args, cluster=None, subreddit=None):
     elif args.exp == 'exp2':
         texts, scores = parse_dataset_by_year(args.dataset_name, cluster, args.neg)
     else:
-        texts, scores = parse_subreddit(subreddit, args.neg)
+        texts, scores = parse_subreddit(subreddit)
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     frequencies = get_frequencies(X)

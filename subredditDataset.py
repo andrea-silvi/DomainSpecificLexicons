@@ -5,7 +5,7 @@ nltk.download('punkt')
 from convokit import Corpus, download
 
 
-def parse_subreddit(subreddit, negation):
+def parse_subreddit(subreddit):
     corpus = Corpus(filename=download("subreddit-" + subreddit))
     comments, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
