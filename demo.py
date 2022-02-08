@@ -28,13 +28,16 @@ def cli_parsing():
                         default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
-    parser.add_argument('--years', '--list', nargs='+', required=False, help='List of couple of years if experiment 2.')
-    parser.add_argument('--subreddits', '--list', nargs='+', required=False, help='List of subreddits if experiment 3.')
+    args = parser.parse_args()
+    if args.exp == 'exp2':
+        args.years = input("Enter list of couple of years for experiment 2.")
+    elif args.exp == 'exp3':
+        args.subreddits = input("Enter list of subreddits for experiment 3.")
 
 
     # Use like:
     # python arg.py -l 1234 2345 3456 4567
-    args = parser.parse_args()
+
     print('the arguments are ', args)
     return args
 
