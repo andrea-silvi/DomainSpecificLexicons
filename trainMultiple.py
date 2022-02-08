@@ -1,21 +1,10 @@
-import argparse
-from AmazonDataset import parse_dataset, parse_dataset_by_year
-from SeedDataset import SeedDataset
 from demo import cli_parsing, createLexicon
-from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
-from train import train, predict
-import numpy as np
-import neptune.new as neptune
-import json
 import time
-from utils.glove_loader import load_glove_words
-from sklearn.preprocessing import StandardScaler
-import seaborn as sns
 import pandas as pd
 
-def split(a, n):
-    k, m = divmod(len(a), n)
-    return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
+# def split(a, n):
+# k, m = divmod(len(a), n)
+# return (a[i*k+min(i, m):(i+1)*k+min(i+1, m)] for i in range(n))
 
 """
 def perform(texts, scores, args, cluster = None):
@@ -92,16 +81,21 @@ def perform(texts, scores, args, cluster = None):
 if __name__ == '__main__':
     start = time.time()
     arguments = cli_parsing()
-    years = list(range(1995, 2015))
-    clustered_years = list(split(years, 4))
-
+    # years = list(range(1995, 2015))
+    # clustered_years = list(split(years, 4))
+    if arguments.years is not None:
+        years = list(arguments.years)
+        couples_of_years = []
+        for i in range(len(years), step=2):
+            couples_of_years.append((years[i], years[i+1]))
+    else:
+        print("ATTENTION! List of years to start from and stop at needed. Restart")
     # for each cluster of years we perform the process
-    for i, cluster in enumerate(clustered_years):
-        lexicon = createLexicon(arguments, cluster)
+    for i, boundary_years in enumerate(couples_of_years):
+        lexicon = createLexicon(arguments, list(range(boundary_years[0], boundary_years[1]+1)))
         if i == 0:
             final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index')
         else:
             for word, sentiment in lexicon.items():
                 final_dataframe.loc[word, i] = sentiment
-    final_dataframe.to_csv(f"scores_per_year_cluster.csv")
-
+    final_dataframe.to_csv(f"scores_per_year_pairs.csv")
