@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # years = list(range(1995, 2015))
     # clustered_years = list(split(years, 4))
     if arguments.years is not None:
-        years = list(arguments.years)
+        years = list(map(lambda x: int(x), arguments.years))
         couples_of_years = []
         for i in range(len(years), step=2):
             couples_of_years.append((years[i], years[i+1]))
