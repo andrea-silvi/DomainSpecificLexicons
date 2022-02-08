@@ -79,9 +79,8 @@ def createLexicon(args, cluster=None, subreddit=None):
     run.stop()
     if args.exp == 'exp1':
         test(lexicon=complete_results)
-    elif args.exp == 'exp2':
+    else:
         return complete_results
-
 if __name__ == '__main__':
     arguments = cli_parsing()
     createLexicon(args=arguments)
