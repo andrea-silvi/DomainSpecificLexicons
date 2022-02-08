@@ -84,15 +84,17 @@ if __name__ == '__main__':
     # years = list(range(1995, 2015))
     # clustered_years = list(split(years, 4))
     if arguments.years is not None:
-        years = list(arguments.years)
+        years = arguments.years
+
+        print(years)
         couples_of_years = []
-        for i in range(len(years), step=2):
-            couples_of_years.append((years[i], years[i+1]))
+        for i in range(0, len(years), 2):
+            couples_of_years.append((int(years[i]), int(years[i + 1])))
     else:
         print("ATTENTION! List of years to start from and stop at needed. Restart")
     # for each cluster of years we perform the process
     for i, boundary_years in enumerate(couples_of_years):
-        lexicon = createLexicon(arguments, list(range(boundary_years[0], boundary_years[1]+1)))
+        lexicon = createLexicon(arguments, list(range(boundary_years[0], boundary_years[1] + 1)))
         if i == 0:
             final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index')
         else:
