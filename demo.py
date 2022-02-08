@@ -43,7 +43,6 @@ def cli_parsing():
     return args
 
 
-
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 
 
@@ -55,6 +54,7 @@ def createLexicon(args, cluster=None, subreddit=None):
     elif args.exp == 'exp2':
         texts, scores = parse_dataset_by_year(args.dataset_name, cluster, args.neg)
     else:
+        EMBEDDINGS_PATH = '/content/drive/MyDrive/GloVe.Reddit.120B.300D.txt'
         texts, scores = parse_subreddit(subreddit)
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
