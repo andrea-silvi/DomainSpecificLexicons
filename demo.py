@@ -2,6 +2,7 @@ import argparse
 from AmazonDataset import parse_dataset, parse_dataset_by_year
 from SeedDataset import SeedDataset
 from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
+from subredditDataset import parse_subreddit
 from train import train, predict
 from test import test
 import numpy as np
