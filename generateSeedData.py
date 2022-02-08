@@ -50,7 +50,7 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
     if whole_weighing:
         # if we use this
         # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
-        offset = len('negatedw')
+        offset = len('negatedw ')
         negated = {
             key[offset:] : w[val] for key, val in vocabulary.items()
             if (val not in ind) and (key.lower().startswith('negatedw')) and key[offset:] in glove_words
