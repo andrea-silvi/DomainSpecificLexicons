@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     years = [1996, 2002, 2002, 2008, 2008, 2014, 2015, 2018]
     couples_of_years = []
-    for i in range(len(years), step=2):
+    for i in range(0, len(years), 2):
         couples_of_years.append((years[i], years[i+1]))
 
     # for each cluster of years we perform the process
