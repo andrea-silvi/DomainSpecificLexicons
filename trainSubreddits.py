@@ -8,10 +8,10 @@ if __name__ == '__main__':
     start = time.time()
     arguments = cli_parsing()
     if arguments.subreddits is not None:
-        subreddits = list(arguments.subreddits)
+        subreddits = arguments.subreddits
     else:
         print("ATTENTION! List of subreddits to build lexicons of needed. Restart.")
-    # for each cluster of years we perform the process
+    # for each subreddit we create the lexicon
     for i, subreddit in enumerate(subreddits):
         lexicon = createLexicon(arguments, subreddit)
         if i == 0:
