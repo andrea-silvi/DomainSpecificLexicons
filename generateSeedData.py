@@ -41,6 +41,7 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
     @ params f_min : minimal frequency threshold (words with a frequency below this threshold will be removed)*
     @ params EMBEDDINGS_PATH : glove embeddings file path
     @ params glove_words : glove words vocabulary
+
     @ params weighing : 'normal' : just use SVM scores. 'whole' : use average of score and opposite of the negation if possible
     """
     ind = np.nonzero(frequencies < f_min)[0]
