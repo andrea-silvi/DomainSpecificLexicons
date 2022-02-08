@@ -72,7 +72,9 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
 
-    for review in parse(dataset_name):
+    for i, review in enumerate(parse(dataset_name)):
+        if i == 2500000:
+            break
         try:
             year_review = int(review["reviewTime"].split(",")[1][1:])
             if year_review in cluster:
@@ -89,6 +91,7 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
                     scores.append(score)
         except KeyError:
             continue
+
 
     return reviews, scores
 

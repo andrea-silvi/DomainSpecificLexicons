@@ -1,8 +1,6 @@
-import numpy as np
 from nltk import RegexpTokenizer
-from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
+from sklearn.metrics import accuracy_score
 from testDatasets import parseIMDBDataset, parseGameStopDataset
-
 
 
 # TODO : instead of 0 for unknown words, use average sentiment score ?
@@ -19,17 +17,8 @@ def calculate_statistics(df, tokenizer, lexicon):
     df['prediction'] = df['review'].apply(lambda x: calculate_sentiment(x, lexicon))
     threshold = df["prediction"].mean()
     df['prediction'] = df['prediction'].apply(lambda x: -1 if x < threshold else 1)
-
     acc = accuracy_score(df["sentiment"], df["prediction"])
-    pr = precision_score(df["sentiment"], df["prediction"], average='macro')
-    rec = recall_score(df["sentiment"], df["prediction"], average='macro')
-    fscore = f1_score(df["sentiment"], df["prediction"], average='macro')
-
     print(f"Accuracy : {acc}")
-    print(f"Precision : {pr}")
-    print(f"Recall : {rec}")
-    print(f"F1 score : {fscore}")
-
 
 
 def test(lexicon):

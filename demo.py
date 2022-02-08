@@ -2,6 +2,7 @@ import argparse
 from AmazonDataset import parse_dataset, parse_dataset_by_year
 from SeedDataset import SeedDataset
 from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
+from subredditDataset import parse_subreddit
 from train import train, predict
 from test import test
 import numpy as np
@@ -30,6 +31,15 @@ def cli_parsing():
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
+    if args.exp == 'exp2':
+        args.years = input("Enter list of couple of years for experiment 2.").split()
+    elif args.exp == 'exp3':
+        args.subreddits = input("Enter list of subreddits for experiment 3.").split()
+
+
+    # Use like:
+    # python arg.py -l 1234 2345 3456 4567
+
     print('the arguments are ', args)
     return args
 
@@ -38,13 +48,15 @@ def cli_parsing():
 EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
 
 
-def createLexicon(args, cluster=None):
+def createLexicon(args, cluster=None, subreddit=None):
     with open("neptune.json") as neptune_file:
         parameters = json.load(neptune_file)
-    if cluster is None:
+    if args.exp == 'exp1':
         texts, scores = parse_dataset(args.dataset_name, args.neg)
-    else:
+    elif args.exp == 'exp2':
         texts, scores = parse_dataset_by_year(args.dataset_name, cluster, args.neg)
+    else:
+        texts, scores = parse_subreddit(subreddit)
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     frequencies = get_frequencies(X)
