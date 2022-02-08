@@ -86,7 +86,7 @@ def createLexicon(args, cluster=None, subreddit=None):
 
     if args.exp == 'exp1':
         test(lexicon=complete_results)
-    else args.exp == 'exp3':
+    else:
         return complete_results
 
 if __name__ == '__main__':
