@@ -64,7 +64,7 @@ def perform(texts, scores, args, cluster = None):
         print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
         bottom.append([words[indices_low[i]],scaled[indices_low[i]] ])
 
-    mean_value = np.mean(scaled)
+    mean_value = np.mecan(scaled)
     print(f"Mean of the lexicon {mean_value} ")
 
     #we filter out the values [-0. 2, 0.2]
