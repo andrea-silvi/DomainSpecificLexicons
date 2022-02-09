@@ -43,10 +43,11 @@ def cli_parsing():
     return args
 
 
-EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
+
 
 
 def createLexicon(args, cluster=None, subreddit=None):
+    EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
     with open("neptune.json") as neptune_file:
         parameters = json.load(neptune_file)
     if args.exp == 'exp1':
