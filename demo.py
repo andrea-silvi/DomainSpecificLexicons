@@ -24,17 +24,12 @@ def cli_parsing():
                         choices=['Ulysse', 'Andrea', 'Fabio'])
     parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
                         choices=['normal', 'whole', 'complex'], default='normal')
-    parser.add_argument('--weighing', type=str, required=False, 
+    parser.add_argument('--weighing', type=str, required=False,
                         help='different methods to compute words scores knowing its negation score',
                         default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
-    if args.exp == 'exp2':
-        args.years = input("Enter list of couple of years for experiment 2.").split()
-    elif args.exp == 'exp3':
-        args.subreddits = input("Enter list of subreddits for experiment 3.").split()
-
 
     # Use like:
     # python arg.py -l 1234 2345 3456 4567
@@ -43,10 +38,9 @@ def cli_parsing():
     return args
 
 
-
-
-
 def createLexicon(args, cluster=None, subreddit=None):
+    if cluster is not None:
+        print(f'Starting training for years {cluster}...')
     EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
     with open("neptune.json") as neptune_file:
         parameters = json.load(neptune_file)
@@ -67,7 +61,7 @@ def createLexicon(args, cluster=None, subreddit=None):
                                       EMBEDDINGS_PATH=EMBEDDINGS_PATH,
                                       glove_words=glove_words,
                                       weighing=args.weighing)
-    print('start of training...')
+    print(f'start of training with {len(seed_dataset)} seed words...')
     neptune_parameters = parameters[args.user]
     run = neptune.init(api_token=neptune_parameters["neptune_token"],
                        project=neptune_parameters["neptune_project"])  # pass your credentials
@@ -82,6 +76,8 @@ def createLexicon(args, cluster=None, subreddit=None):
         test(lexicon=complete_results)
     else:
         return complete_results
+
+
 if __name__ == '__main__':
     arguments = cli_parsing()
     createLexicon(args=arguments)

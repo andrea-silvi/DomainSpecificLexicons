@@ -56,7 +56,7 @@ def parse_dataset(dataset_name, negation='normal'):
 
     return reviews, scores
 
-
+@timing_wrapper("dataset parsing")
 def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
     """
     Generate a numpy array with (review, score) from a gzip file.
@@ -71,14 +71,15 @@ def parse_dataset_by_year(dataset_name, cluster, negation='normal'):
             nlp_parser.remove_pipe(component)
     reviews, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
-
+    counter_reviews = 0
     for i, review in enumerate(parse(dataset_name)):
-        if i == 2500000:
+        if counter_reviews == 2500000:
             break
         try:
             year_review = int(review["reviewTime"].split(",")[1][1:])
             if year_review in cluster:
                 if review["overall"] != 3.0:
+                    counter_reviews += 1
                     if whole_negation:
                         rev = whole_sentence_negation(review["reviewText"], tokenizer)
                     elif complex_negation:

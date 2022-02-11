@@ -83,19 +83,13 @@ if __name__ == '__main__':
     arguments = cli_parsing()
     # years = list(range(1995, 2015))
     # clustered_years = list(split(years, 4))
-    if arguments.years is not None:
-        years = list(map(lambda x: int(x), arguments.years))
-        couples_of_years = []
-        for i in range(len(years), step=2):
-            couples_of_years.append((years[i], years[i+1]))
-    else:
-        print("ATTENTION! List of years to start from and stop at needed. Restart")
+    couples_of_years = [(1995, 2004), (2009, 2013), (2016, 2018)]
     # for each cluster of years we perform the process
     for i, boundary_years in enumerate(couples_of_years):
         lexicon = createLexicon(arguments, list(range(boundary_years[0], boundary_years[1]+1)))
         if i == 0:
             final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index')
+            final_dataframe = final_dataframe.sort_index()
         else:
-            for word, sentiment in lexicon.items():
-                final_dataframe.loc[word, i] = sentiment
+            final_dataframe[i] = (final_dataframe.index).map(lexicon)
     final_dataframe.to_csv(f"scores_per_year_pairs.csv")
