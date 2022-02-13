@@ -5,13 +5,13 @@ import torch
 # Example on how to implement it can be found at
 # https://github.com/Bjarten/early-stopping-pytorch/blob/master/MNIST_Early_Stopping_example.ipynb
 class EarlyStopping:
-    """Early stops the training if validation loss doesn't improve after a given patience."""
+    """Early stops the training if training loss doesn't improve after a given patience."""
 
     def __init__(self, patience=20, verbose=False, delta=0, path='checkpoint.pt', trace_func=print):
         """
         Args:
             patience (int): How long to wait after last time validation loss improved.
-                            Default: 7
+                            Default: 20
             verbose (bool): If True, prints a message for each validation loss improvement.
                             Default: False
             delta (float): Minimum change in the monitored quantity to qualify as an improvement.
@@ -34,7 +34,6 @@ class EarlyStopping:
     def __call__(self, loss, model, epoch):
 
         score = -loss
-
         if self.best_score is None:
             self.best_score = score
             self.save_checkpoint(loss, model, epoch)
