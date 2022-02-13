@@ -28,14 +28,16 @@ def calculate_statistics(df, tokenizer, lexicon):
     print(f"Accuracy: {acc}")
 
 
-def test(lexicon):
+def test(lexicon, args):
     '''
     Runs all the tests of experiment 1 over the IMDB and the GameStop datasets.
     '''
     tokenizer = RegexpTokenizer(r'\w+')
-    df = parseIMDBDataset()
+    if args.IMDB is None or args.GameStop is None:
+        raise Exception("Need to input both the IMDB and Gamestop datasets path to perform experiment 1.")
+    df = parseIMDBDataset(args.IMDB)
     print('IMDB results:')
     calculate_statistics(df, tokenizer, lexicon)
-    df = parseGameStopDataset()
+    df = parseGameStopDataset(args.GameStop)
     print('GameStop results:')
     calculate_statistics(df, tokenizer, lexicon)
