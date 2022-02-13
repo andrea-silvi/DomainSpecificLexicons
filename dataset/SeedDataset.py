@@ -1,27 +1,22 @@
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import numpy as np
-
-from utils.glove_loader import load_glove_model
-
-'''
-We need [word_vector, target] -> label propagation -> [word, target]
-'''
+from utils_.glove_loader import load_glove_model
 
 
 class SeedDataset(Dataset):
-    def __init__(self, data, embeddings_path,  split='train'):
-
+    def __init__(self, data, embeddings_path, split='train'):
         self.split = split
         if self.split == 'train':
-            self.words = list(data.keys())
-            # self.scores = list(data.values())
             self.scores = np.array(list(data.values()), dtype=np.float32)
-        else:
-            self.words = list(data.keys())
+        self.words = list(data.keys())
         self.embeddings = load_glove_model(embeddings_path, data)
 
     def __getitem__(self, index):
+        """
+        If it is the training dataset, it returns (word_vector, score).
+        If it is the test dataset, it returns (word_vector, word).
+        """
         x = torch.tensor(self.embeddings[self.words[index]])
         if self.split == 'train':
             y = torch.tensor(self.scores[index])
