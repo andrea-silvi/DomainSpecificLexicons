@@ -20,7 +20,7 @@ For example, in order to generate the lexicon of the Amazon dataset Musical Inst
 "!python3 lexiconGeneration.py --dataset_name='Musical-instruments-dataset-path' --f_min=500 --neg='normal' --exp='no_experiment' --weighing='normal' 
   --embeddings='embeddings_path' ". This will return a python dictionary object, with as keys the words of the vocabulary of the GloVe word vectors and as scores the sentiment polarity scores of each word.
 
-##Run Experiment 1: Unsupervised Review Sentiment Classification
+## Run Experiment 1: Unsupervised Review Sentiment Classification
 If you want to rerun our experiments on Unsupervised Review Sentiment Classification, one should run the same command as above but with the following modifications:
   - exp = 'exp1'
   - an additional parameter IMDB: the file path of the IMDB dataset to predict the scores of its unseen reviews;
