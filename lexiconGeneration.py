@@ -25,6 +25,8 @@ def arguments_parsing():
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
                         choices=['exp1', 'exp2', 'exp3'])
     parser.add_argument('--embeddings', type=str, required=True, help='file path of word vector embeddings.')
+    parser.add_argument('--IMDB', type=str, required=False, help='file path of IMDB dataset for experiment 1.')
+    parser.add_argument('--GameStop', type=str, required=False, help='file path of GameStop dataset for experiment 1.')
     args = parser.parse_args()
     return args
 
@@ -59,7 +61,7 @@ def createLexicon(args, years=None, subreddit=None):
     results = predict(model, non_seed_dataset)
     complete_results.update(results)
     if args.exp == 'exp1':
-        test(lexicon=complete_results)
+        test(lexicon=complete_results, args=args)
     else:
         return complete_results
 
