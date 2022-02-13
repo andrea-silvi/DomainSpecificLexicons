@@ -15,12 +15,12 @@ from utils.glove_loader import load_glove_words
 from utils.utils import timing_wrapper
 
 
-
 @timing_wrapper("BOW generation")
 def generate_bow(reviews):
     vectorizer = CountVectorizer()
     X = vectorizer.fit_transform(reviews)
     return X, vectorizer.vocabulary_
+
 
 @timing_wrapper("SVM training")
 def train_linear_pred(X, y):
@@ -31,6 +31,7 @@ def train_linear_pred(X, y):
     clf.fit(X, y)
     W = np.array(clf.coef_[0], dtype=np.float32)
     return W
+
 
 # TODO : handle whole sentence negation
 def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove_words, weighing='normal'):
@@ -52,28 +53,30 @@ def assign_word_labels(frequencies, w, vocabulary, f_min, EMBEDDINGS_PATH, glove
         # then as words ' weights (not negated), we use (normal weight + (- negated word weight))/2
         offset = len('negatedw')
         negated = {
-            key[offset:] : w[val] for key, val in vocabulary.items()
+            key[offset:]: w[val] for key, val in vocabulary.items()
             if (val not in ind) and (key.lower().startswith('negatedw')) and key[offset:] in glove_words
         }
         seed_data = {
-            key: (w[val] if key not in negated else (w[val] + negated[key])/2)
+            key: (w[val] if key not in negated else (w[val] + negated[key]) / 2)
             for key, val in vocabulary.items()
             if (val not in ind)
-            and (not key.lower().startswith('negatedw'))
-            and key in glove_words
+               and (not key.lower().startswith('negatedw'))
+               and key in glove_words
         }
 
         # printing some words 
         words = {word for word in negated if word in seed_data}
-        words = {word : {"n" : negated[word] , "p" : w[vocabulary[word]] , "o": seed_data[word] } for word in words if abs(w[vocabulary[word]]) > 0.2 }
+        words = {word: {"n": negated[word], "p": w[vocabulary[word]], "o": seed_data[word]} for word in words if
+                 abs(w[vocabulary[word]]) > 0.2}
 
         for i, word in enumerate(words):
-            print(f"{word} : negated score : "+str({words[word]['n']})+" | SVM score : "+str({words[word]['p']})+" | overall score :"+str({words[word]['o']}))
+            print(f"{word} : negated score : " + str({words[word]['n']}) + " | SVM score : " + str(
+                {words[word]['p']}) + " | overall score :" + str({words[word]['o']}))
             if i >= 24:
                 break
     else:
         seed_data = {key: w[val] for key, val in vocabulary.items() if
-                 (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
+                     (val not in ind) and (not key.lower().startswith('negatedw')) and key in glove_words}
 
     return SeedDataset(seed_data, EMBEDDINGS_PATH)
 
