@@ -64,7 +64,7 @@ def predict(model, test_dataset):
         batch_size=64,
         shuffle=True,
         num_workers=2)
-    with torch.no_grad:
+    with torch.no_grad():
         for wv, w in test_dataloader:
             wv = wv.cuda()
             pred = model(wv)
