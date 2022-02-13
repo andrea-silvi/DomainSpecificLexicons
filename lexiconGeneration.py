@@ -8,7 +8,6 @@ import numpy as np
 from utils_.glove_loader import load_glove_words
 from utils_.utils import arguments_parsing
 
-
 def createLexicon(args, years=None, subreddit=None):
     print('Starting lexicon generation...')
     if args.exp == 'exp1':
