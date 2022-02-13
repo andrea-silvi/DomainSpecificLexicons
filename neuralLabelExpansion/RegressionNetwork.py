@@ -4,7 +4,6 @@ import torch.nn.functional as F
 
 
 class RegressionModel(nn.Module):
-
     def __init__(self, low, high, dropout=0.2):
         super(RegressionModel, self).__init__()
         self.dropout = dropout
@@ -23,7 +22,6 @@ class RegressionModel(nn.Module):
         self.bn4 = nn.BatchNorm1d(9)
 
     def forward(self, x):
-        batchsize = x.size()[0]
         x = F.relu(self.bn1(self.fc_layer_1(x)))
         x = self.dp(x)
         x = F.relu(self.bn2(self.fc_layer_2(x)))
@@ -33,5 +31,4 @@ class RegressionModel(nn.Module):
         x = F.softmax(self.bn4(self.fc_layer_4(x)), dim=1)
         x = x * (self.high - self.low) + self.low
         x = self.output(x)
-
         return x
