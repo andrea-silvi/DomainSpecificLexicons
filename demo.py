@@ -1,91 +1,83 @@
 import argparse
-from AmazonDataset import parse_dataset
+from AmazonDataset import parse_dataset, parse_dataset_by_year
 from SeedDataset import SeedDataset
 from generateSeedData import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
+from subredditDataset import parse_subreddit
 from train import train, predict
+from test import test
 import numpy as np
 import neptune.new as neptune
 import json
 import time
 from utils.glove_loader import load_glove_words
+from utils.utils import timing_wrapper
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 
 
-EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
-if __name__ == '__main__':
-    start = time.time()
-    file_parameters = open("neptune.json")
-    parameters = json.load(file_parameters)
+def cli_parsing():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
-    parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.')
-    parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.')
-    parser.add_argument('--neg', type=str, required=True, help='more costly method to find better negations.')
+    parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.',
+                        default=500)
+    parser.add_argument('--user', type=str, required=True, help='user to log stuff into his neptune.',
+                        choices=['Ulysse', 'Andrea', 'Fabio'])
+    parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
+                        choices=['normal', 'whole', 'complex'], default='normal')
+    parser.add_argument('--weighing', type=str, required=False,
+                        help='different methods to compute words scores knowing its negation score',
+                        default='normal', choices=['normal', "whole"])
+    parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
+                        choices=['exp1', 'exp2', 'exp3'])
     args = parser.parse_args()
+
+    # Use like:
+    # python arg.py -l 1234 2345 3456 4567
+
     print('the arguments are ', args)
-    texts, scores = parse_dataset(args.dataset_name, True if args.neg == 'complex' else False)
-    print(f'dataset has been read in {int(time.time()-start)} seconds.')
-    start = time.time()
+    return args
+
+
+def createLexicon(args, cluster=None, subreddit=None):
+    if cluster is not None:
+        print(f'Starting training for years {cluster}...')
+    EMBEDDINGS_PATH = '/content/drive/MyDrive/glove.840B.300d.txt'
+    with open("neptune.json") as neptune_file:
+        parameters = json.load(neptune_file)
+    if args.exp == 'exp1':
+        texts, scores = parse_dataset(args.dataset_name, args.neg)
+    elif args.exp == 'exp2':
+        texts, scores = parse_dataset_by_year(args.dataset_name, cluster, args.neg)
+    else:
+        EMBEDDINGS_PATH = '/content/drive/MyDrive/GloVe.Reddit.120B.300D.txt'
+        texts, scores = parse_subreddit(subreddit)
     y = np.array(scores)
     X, vocabulary = generate_bow(texts)
     frequencies = get_frequencies(X)
-    print(f'review-word bow matrix generated in {int(time.time()-start)} seconds.')
-    start = time.time()
     W = train_linear_pred(X, y)
-    print(f'found linear coefficients in {int(time.time()-start)} seconds.')
-
     glove_words = load_glove_words(EMBEDDINGS_PATH)
-    seed_dataset = assign_word_labels(frequencies, W, vocabulary, f_min=args.f_min,
-                                      EMBEDDINGS_PATH = EMBEDDINGS_PATH, glove_words=glove_words)
-    print('start of training...')
-    start = time.time()
-
-
+    seed_dataset = assign_word_labels(frequencies, W, vocabulary,
+                                      f_min=args.f_min,
+                                      EMBEDDINGS_PATH=EMBEDDINGS_PATH,
+                                      glove_words=glove_words,
+                                      weighing=args.weighing)
+    print(f'start of training with {len(seed_dataset)} seed words...')
     neptune_parameters = parameters[args.user]
-    run = neptune.init(api_token=neptune_parameters["neptune_token"], project= neptune_parameters["neptune_project"])  # pass your credentials
+    run = neptune.init(api_token=neptune_parameters["neptune_token"],
+                       project=neptune_parameters["neptune_project"])  # pass your credentials
     model = train(seed_dataset, run)
-    print(f'time of training: {int(time.time()-start)} seconds')
     complete_results = seed_dataset.get_dictionary()
-    
     non_seed_data = {w: 0 for w in glove_words if w not in complete_results}
     non_seed_dataset = SeedDataset(non_seed_data, EMBEDDINGS_PATH, split='test')
-    start = time.time()
     results = predict(model, non_seed_dataset)
-    print(f'time of predictions: {int(time.time()-start)} seconds')
     complete_results.update(results)
-    #close the run on neptune
-
-    complete_results_to_scaled = list(complete_results.values())
-    scaled = np.array(complete_results_to_scaled)
-    """
-    for i, (k, v) in enumerate(complete_results.items()):
-        if i > 20:
-            break
-        print(k, scaled[i])
-    """
-    indices_high = (-scaled).argsort()[:15]
-    indices_low = (scaled).argsort()[:15]
-    words = list(complete_results.keys())
-
-    print(f"THE 15 MOST HIGH")
-    for i in range(len(indices_high)):
-        if i == 0:
-            run["sys/tags"].add([f"max: {words[indices_high[i]]} : {scaled[indices_high[i]]} "])
-        print(f"\n{i} {words[indices_high[i]]} : {scaled[indices_high[i]]}")
-
-    print(f"THE 15 MOST LOW")
-    for i in range(len(indices_low)):
-        if i == 0:
-            run["sys/tags"].add([f"min: {words[indices_low[i]]} : {scaled[indices_low[i]]} "])
-        print(f"\n{i} {words[indices_low[i]]} : {scaled[indices_low[i]]}")
-
-    mean_value = np.mean(scaled)
-    print(f"Mean of the lexicon {mean_value}")
-    plt = sns.displot(scaled, kind = "kde")
-    plt.savefig("Distribution_words_for_score.png")
-    run["sys/tags"].add([f"f-min: {args.f_min}", f"mean: {mean_value}"])
-
-
-
     run.stop()
+    if args.exp == 'exp1':
+        test(lexicon=complete_results)
+    else:
+        return complete_results
+
+
+if __name__ == '__main__':
+    arguments = cli_parsing()
+    createLexicon(args=arguments)

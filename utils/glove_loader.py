@@ -1,8 +1,9 @@
 import numpy as np
 import logging
+from utils.utils import timing_wrapper
 logger = logging.getLogger()
 
-
+@timing_wrapper("Glove model loading")
 def load_glove_model(File, vocab=None):
     print("Loading Glove Model...")
     glove_model = {}
@@ -27,6 +28,7 @@ def check_cast_to_float(s):
     except ValueError:
         return False
 
+@timing_wrapper("Glove words loading")
 def load_glove_words(File, ):
     print("Loading Glove words...")
     glove_words = set()
@@ -36,14 +38,37 @@ def load_glove_words(File, ):
                 split_line = line.split()
                 word = split_line[0]
                 try:
-                  t = float(split_line[1])
-                  if not check_cast_to_float(word):
-                      glove_words.add(word)
-                  else:
-                      logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
-                
+                    t = float(split_line[1])
+                    if not check_cast_to_float(word):
+                        glove_words.add(word)
+                    else:
+                        logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
+
                 except ValueError:
-                      continue
+                    continue
+            except ValueError:
+                continue
+
+    return glove_words
+
+
+def load_glove_empty_dictionary(File, ):
+    print("Loading Glove words...")
+    glove_words = {}
+    with open(File, 'r', encoding='utf-8') as f:
+        for line in f:
+            try:
+                split_line = line.split()
+                word = split_line[0]
+                try:
+                    t = float(split_line[1])
+                    if not check_cast_to_float(word):
+                        glove_words[word] = []
+                    else:
+                        logger.debug("Invalid word parsed in load_glove_words : word was actually a float")
+
+                except ValueError:
+                    continue
             except ValueError:
                 continue
 

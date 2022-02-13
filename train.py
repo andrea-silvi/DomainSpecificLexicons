@@ -7,10 +7,11 @@ from SeedDataset import SeedDataset
 from RegressionNetwork import RegressionModel
 import neptune.new as neptune
 import gc
+from utils.utils import timing_wrapper
 
 CHECKPOINT_PATH = "checkpoint.pt"
 
-
+@timing_wrapper("Regression network training")
 def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epochs=100, *args):
     torch.manual_seed(11)
     loss = MSELoss()
@@ -32,6 +33,7 @@ def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epo
         for wvs, scores in train_dataloader:
             optimizer.zero_grad()
             wvs = wvs.cuda()
+            scores = scores.reshape(-1, 1)
             scores = scores.cuda()
             prediction = model(wvs)
             prediction = prediction.cuda()
@@ -58,6 +60,7 @@ def train(dataset: SeedDataset, run,  batch_size=32, n_workers=2, lr=1e-3, n_epo
         # print(f'\tepoch: {epoch}, training loss: {epoch_loss}')
 
 
+@timing_wrapper("Regression network prediction")
 def predict(model, test_dataset):
     model.cuda()
     model.eval()
