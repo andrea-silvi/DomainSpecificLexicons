@@ -18,8 +18,8 @@ If you just want to obtain a lexicon from a given input corpus, please run modul
   - embeddings = the path of the GloVe word vector file.
 For example, in order to generate the lexicon of the Amazon dataset Musical Instruments review dataset, one would launch:
 
-"!python3 lexiconGeneration.py --dataset_name='Musical-instruments-dataset-path' --f_min=500 --neg='normal' --exp='no_experiment' --weighing='normal' 
-  --embeddings='embeddings_path' ".
+*!python3 lexiconGeneration.py --dataset_name='Musical-instruments-dataset-path' --f_min=500 --neg='normal' --exp='no_experiment' --weighing='normal' 
+  --embeddings='embeddings_path'*.
   
   This will return a python dictionary object, with as keys the words of the vocabulary of the GloVe word vectors and as scores the sentiment polarity scores of each word.
 
@@ -30,7 +30,7 @@ If you want to rerun our experiments on Unsupervised Review Sentiment Classifica
   - an additional parameter GameStop: the file path of the GameStop dataset to predict the scores of its unseen reviews.
 For example, one would train on the input corpus Musical Instruments and run the experiment 1 as:
 
-"!python3 lexiconGeneration.py --dataset_name='Musical-instruments-dataset-path' --f_min=500 --neg='normal' --exp='exp1' --weighing='normal' 
-  --embeddings='embeddings_path' --IMDB='IMDB-dataset-path' --GameStop='GameStop-dataset-path' "
+*!python3 lexiconGeneration.py --dataset_name='Musical-instruments-dataset-path' --f_min=500 --neg='normal' --exp='exp1' --weighing='normal' 
+  --embeddings='embeddings_path' --IMDB='IMDB-dataset-path' --GameStop='GameStop-dataset-path'*
   
 
