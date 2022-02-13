@@ -10,7 +10,7 @@ from utils_.utils import arguments_parsing
 
 
 def createLexicon(args, years=None, subreddit=None):
-    print('Starting lexicon generation with input corpus parsing...')
+    print('Starting lexicon generation...')
     if args.exp == 'exp1':
         texts, scores = parse_dataset(args.dataset_name, args.neg)
     elif args.exp == 'exp2':
