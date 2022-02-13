@@ -2,8 +2,6 @@ import numpy as np
 import torch
 
 
-# Example on how to implement it can be found at
-# https://github.com/Bjarten/early-stopping-pytorch/blob/master/MNIST_Early_Stopping_example.ipynb
 class EarlyStopping:
     """Early stops the training if training loss doesn't improve after a given patience."""
 

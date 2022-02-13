@@ -1,4 +1,3 @@
-import argparse
 from dataset.AmazonDataset import parse_dataset, parse_dataset_by_year
 from dataset.SeedDataset import SeedDataset
 from seedDataInduction.seedDataInduction import generate_bow, get_frequencies, train_linear_pred, assign_word_labels
@@ -7,28 +6,7 @@ from neuralLabelExpansion.train import train, predict
 from experiments.test import test
 import numpy as np
 from utils_.glove_loader import load_glove_words
-
-
-def arguments_parsing():
-    '''
-    parses and manages command line arguments.
-    '''
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
-    parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.',
-                        default=500)
-    parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
-                        choices=['normal', 'whole', 'complex'], default='normal')
-    parser.add_argument('--weighing', type=str, required=False,
-                        help='either not use or use scores of negated word in seed data induction step.',
-                        default='normal', choices=['normal', "whole"])
-    parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
-                        choices=['exp1', 'exp2', 'exp3'])
-    parser.add_argument('--embeddings', type=str, required=True, help='file path of word vector embeddings.')
-    parser.add_argument('--IMDB', type=str, required=False, help='file path of IMDB dataset for experiment 1.')
-    parser.add_argument('--GameStop', type=str, required=False, help='file path of GameStop dataset for experiment 1.')
-    args = parser.parse_args()
-    return args
+from utils_.utils import arguments_parsing
 
 
 def createLexicon(args, years=None, subreddit=None):

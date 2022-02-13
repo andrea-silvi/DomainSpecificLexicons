@@ -4,7 +4,7 @@ from torch.nn import MSELoss
 import numpy as np
 from utils_.early_stopping import EarlyStopping
 from dataset.SeedDataset import SeedDataset
-from RegressionNetwork import RegressionModel
+from neuralLabelExpansion.RegressionNetwork import RegressionModel
 import gc
 from utils_.utils import timing_wrapper
 

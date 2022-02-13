@@ -5,7 +5,6 @@ from nltk import RegexpTokenizer
 from utils_.preprocessing import find_negations, whole_sentence_negation, find_complex_negations
 from utils_.utils import timing_wrapper
 import spacy
-import time
 
 
 def parse(path):

@@ -1,4 +1,5 @@
-from lexiconGeneration import arguments_parsing, createLexicon
+from lexiconGeneration import createLexicon
+from utils_.utils import arguments_parsing
 import pandas as pd
 
 if __name__ == '__main__':
