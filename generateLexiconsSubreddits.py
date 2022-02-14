@@ -18,8 +18,8 @@ if __name__ == '__main__':
     for i, subreddit in enumerate(subreddits):
         lexicon = createLexicon(arguments, subreddit=subreddit)
         if i == 0:
-            final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index', columns=[subreddit])
+            final_dataframe = pd.DataFrame.from_dict(lexicon, orient='index')
+            final_dataframe = final_dataframe.sort_index()
         else:
-            for word, sentiment in lexicon.items():
-                final_dataframe.loc[word, subreddit] = sentiment
+            final_dataframe[i] = (final_dataframe.index).map(lexicon)
     final_dataframe.to_csv(f"scores_per_subreddit.csv")
