@@ -14,7 +14,8 @@ def parse_subreddit(subreddit):
     comments, scores = [], []
     tokenizer = RegexpTokenizer(r'\w+')
     for utterance in corpus.iter_utterances():
-        comments.append(find_negations(utterance.text, tokenizer))
-        scores.append(1 if utterance.meta['score'] > 0 else -1)
+        if utterance.meta['score'] != 1:
+            comments.append(find_negations(utterance.text, tokenizer))
+            scores.append(1 if utterance.meta['score'] > 1 else -1)
     return comments, scores
 
