@@ -49,7 +49,7 @@ For example, if one would want to run experiment 2 on the Movies amazon dataset,
 *python3 generateLexiconsDifferentYears.py --dataset_name='Movie-tv-series-dataset-path' --f_min=500 --neg='normal' --exp='exp2' --weighing='normal' 
   --embeddings='embeddings_path'*.
   
-  Afterwards, when asked one would input the string *1996 2000 2006 2010 2015 2018*. Please make sure to insert an even number of years. Also one should be wary that creating a lexicon for a group of years where the reviews are none or a very low number may result in errors/very poor results. 
+  Afterwards, when asked one would input the string '*1996 2000 2006 2010 2015 2018*'. Please make sure to insert an even number of years. Also one should be wary that creating a lexicon for a group of years where the reviews are none or a very low number may result in errors/very poor results. 
  
 ## Run Experiment 3: Reddit Communities Lexicons Comparison
 
