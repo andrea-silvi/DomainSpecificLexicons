@@ -22,12 +22,12 @@ def arguments_parsing():
     parses and manages command line arguments.
     '''
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dataset_name', type=str, required=True, help='Path of the dataset.')
+    parser.add_argument('--dataset_name', type=str, required=False, help='Path of the dataset.')
     parser.add_argument('--f_min', type=int, required=True, help='frequency threshold in seed data generation.',
                         default=500)
     parser.add_argument('--neg', type=str, required=True, help='different methods to find negations.',
                         choices=['normal', 'whole', 'complex'], default='normal')
-    parser.add_argument('--weighing', type=str, required=False,
+    parser.add_argument('--weighing', type=str, required=True,
                         help='either not use or use scores of negated word in seed data induction step.',
                         default='normal', choices=['normal', "whole"])
     parser.add_argument('--exp', type=str, required=True, help='Type of experiment.',
